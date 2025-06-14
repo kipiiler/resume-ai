@@ -1,3 +1,8 @@
+# update sys path to include the project root
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from model.schema import User
 from service.user import UserService
 from model.database import Database, Base, engine
