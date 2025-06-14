@@ -7,3 +7,5 @@ langgraph
 langchain-google-genai
 langchain-community
 duckduckgo-search
+selenium
+webdriver-manager
