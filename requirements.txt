@@ -1,0 +1,3 @@
+langchain
+sqlalchemy
+python-dotenv
