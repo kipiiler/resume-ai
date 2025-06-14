@@ -2,3 +2,8 @@ langchain
 sqlalchemy
 python-dotenv
 pydantic
+tenacity
+langgraph
+langchain-google-genai
+langchain-community
+duckduckgo-search
