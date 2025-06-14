@@ -1,3 +1,4 @@
 langchain
 sqlalchemy
 python-dotenv
+pydantic
