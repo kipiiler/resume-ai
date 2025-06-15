@@ -9,3 +9,5 @@ langchain-community
 duckduckgo-search
 selenium
 webdriver-manager
+click>=8.0.0
+rich>=10.0.0

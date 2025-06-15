@@ -36,7 +36,7 @@ class User(BaseModel):
     major: str
     grade: Optional[str] = None
     location: str
-    grad_year: Optional[int] = None
+    grad_year: Optional[str] = None
     experiences: Optional[List[Experience]] = None
     projects: Optional[List[Project]] = None
 
@@ -60,7 +60,7 @@ class UserDB(Base):
     major = Column(String)
     grade = Column(String, nullable=True)
     location = Column(String)
-    grad_year = Column(Integer, nullable=True)
+    grad_year = Column(String, nullable=True)
     experiences = relationship("ExperienceDB", back_populates="rel_user")
     projects = relationship("ProjectDB", back_populates="rel_user")
 
