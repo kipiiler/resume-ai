@@ -1,4 +1,6 @@
 import click
+import json
+import os
 from typing import List, Dict, Optional
 from datetime import datetime
 from rich.console import Console
@@ -310,6 +312,219 @@ def edit_project(user_id: int):
     else:
         console.print("[red]Failed to update project.[/red]")
 
+def load_data_from_json(user_id: int):
+    """Load experiences and projects from a JSON file."""
+    console.print("\n[bold blue]Load Data from JSON File[/bold blue]")
+    
+    # Get file path
+    file_path = Prompt.ask("Enter the path to your JSON file")
+    
+    if not os.path.exists(file_path):
+        console.print(f"[red]File not found: {file_path}[/red]")
+        return
+    
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            data = json.load(file)
+        
+        # Validate JSON structure
+        if not isinstance(data, dict):
+            console.print("[red]Invalid JSON format. Expected a dictionary with 'experiences' and/or 'projects' keys.[/red]")
+            return
+        
+        experiences_data = data.get('experiences', [])
+        projects_data = data.get('projects', [])
+        
+        if not experiences_data and not projects_data:
+            console.print("[yellow]No experiences or projects found in the JSON file.[/yellow]")
+            return
+        
+        console.print(f"Found {len(experiences_data)} experiences and {len(projects_data)} projects in the file.")
+        
+        if not Confirm.ask("Do you want to proceed with loading this data?"):
+            return
+        
+        # Load experiences
+        exp_success = 0
+        exp_errors = []
+        for i, exp_data in enumerate(experiences_data):
+            try:
+                # Validate required fields
+                required_fields = ['company_name', 'company_location', 'start_date', 'end_date', 
+                                 'short_description', 'long_description']
+                missing_fields = [field for field in required_fields if field not in exp_data]
+                if missing_fields:
+                    exp_errors.append(f"Experience {i+1}: Missing fields: {', '.join(missing_fields)}")
+                    continue
+                
+                experience = Experience(
+                    user_id=user_id,
+                    company_name=exp_data['company_name'],
+                    company_location=exp_data['company_location'],
+                    start_date=exp_data['start_date'],
+                    end_date=exp_data['end_date'],
+                    short_description=exp_data['short_description'],
+                    long_description=exp_data['long_description'],
+                    tech_stack=exp_data.get('tech_stack', [])
+                )
+                
+                experience_service.create_experience(experience)
+                exp_success += 1
+                
+            except Exception as e:
+                exp_errors.append(f"Experience {i+1}: {str(e)}")
+        
+        # Load projects
+        proj_success = 0
+        proj_errors = []
+        for i, proj_data in enumerate(projects_data):
+            try:
+                # Validate required fields
+                required_fields = ['project_name', 'short_description', 'long_description']
+                missing_fields = [field for field in required_fields if field not in proj_data]
+                if missing_fields:
+                    proj_errors.append(f"Project {i+1}: Missing fields: {', '.join(missing_fields)}")
+                    continue
+                
+                project = Project(
+                    user_id=user_id,
+                    project_name=proj_data['project_name'],
+                    start_date=proj_data.get('start_date'),
+                    end_date=proj_data.get('end_date'),
+                    short_description=proj_data['short_description'],
+                    long_description=proj_data['long_description'],
+                    tech_stack=proj_data.get('tech_stack', []),
+                    team_size=proj_data.get('team_size', 1)
+                )
+                
+                project_service.create_project(project)
+                proj_success += 1
+                
+            except Exception as e:
+                proj_errors.append(f"Project {i+1}: {str(e)}")
+        
+        # Report results
+        console.print(f"\n[green]Successfully loaded {exp_success} experiences and {proj_success} projects![/green]")
+        
+        if exp_errors:
+            console.print(f"\n[yellow]Experience errors ({len(exp_errors)}):[/yellow]")
+            for error in exp_errors:
+                console.print(f"  • {error}")
+        
+        if proj_errors:
+            console.print(f"\n[yellow]Project errors ({len(proj_errors)}):[/yellow]")
+            for error in proj_errors:
+                console.print(f"  • {error}")
+                
+    except json.JSONDecodeError as e:
+        console.print(f"[red]Invalid JSON file: {str(e)}[/red]")
+    except Exception as e:
+        console.print(f"[red]Error loading file: {str(e)}[/red]")
+
+def export_data_to_json(user_id: int):
+    """Export user's experiences and projects to a JSON file."""
+    console.print("\n[bold blue]Export Data to JSON File[/bold blue]")
+    
+    # Get user data
+    experiences = experience_service.get_user_experiences(user_id)
+    projects = project_service.get_user_projects(user_id)
+    
+    if not experiences and not projects:
+        console.print("[yellow]No data to export. Add some experiences or projects first.[/yellow]")
+        return
+    
+    # Convert to dictionaries
+    experiences_data = []
+    for exp in experiences:
+        experiences_data.append({
+            'company_name': exp.company_name,
+            'company_location': exp.company_location,
+            'start_date': exp.start_date,
+            'end_date': exp.end_date,
+            'short_description': exp.short_description,
+            'long_description': exp.long_description,
+            'tech_stack': exp.tech_stack or []
+        })
+    
+    projects_data = []
+    for proj in projects:
+        projects_data.append({
+            'project_name': proj.project_name,
+            'start_date': proj.start_date,
+            'end_date': proj.end_date,
+            'short_description': proj.short_description,
+            'long_description': proj.long_description,
+            'tech_stack': proj.tech_stack or [],
+            'team_size': proj.team_size
+        })
+    
+    # Create export data
+    export_data = {
+        'experiences': experiences_data,
+        'projects': projects_data,
+        'export_info': {
+            'total_experiences': len(experiences_data),
+            'total_projects': len(projects_data),
+            'export_date': datetime.now().isoformat()
+        }
+    }
+    
+    # Get file path
+    default_filename = f"resume_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    file_path = Prompt.ask("Enter the output file path", default=default_filename)
+    
+    try:
+        with open(file_path, 'w', encoding='utf-8') as file:
+            json.dump(export_data, file, indent=2, ensure_ascii=False)
+        
+        console.print(f"[green]Data exported successfully to: {file_path}[/green]")
+        console.print(f"[dim]Exported {len(experiences_data)} experiences and {len(projects_data)} projects[/dim]")
+        
+    except Exception as e:
+        console.print(f"[red]Error exporting data: {str(e)}[/red]")
+
+def delete_all_user_data(user_id: int):
+    """Delete all experiences and projects for a user."""
+    console.print("\n[bold red]Delete All Data[/bold red]")
+    
+    # Get current data count
+    experiences = experience_service.get_user_experiences(user_id)
+    projects = project_service.get_user_projects(user_id)
+    
+    if not experiences and not projects:
+        console.print("[yellow]No data to delete.[/yellow]")
+        return
+    
+    console.print(f"[yellow]This will delete {len(experiences)} experiences and {len(projects)} projects.[/yellow]")
+    console.print("[bold red]This action cannot be undone![/bold red]")
+    
+    # Double confirmation
+    if not Confirm.ask("Are you sure you want to delete ALL your data?"):
+        console.print("[green]Operation cancelled.[/green]")
+        return
+    
+    if not Confirm.ask("This is your final warning. Delete ALL data?"):
+        console.print("[green]Operation cancelled.[/green]")
+        return
+    
+    try:
+        # Delete all experiences
+        exp_deleted = 0
+        for exp in experiences:
+            if experience_service.delete_experience(exp.id):
+                exp_deleted += 1
+        
+        # Delete all projects
+        proj_deleted = 0
+        for proj in projects:
+            if project_service.delete_project(proj.id):
+                proj_deleted += 1
+        
+        console.print(f"[green]Successfully deleted {exp_deleted} experiences and {proj_deleted} projects.[/green]")
+        
+    except Exception as e:
+        console.print(f"[red]Error deleting data: {str(e)}[/red]")
+
 @click.command()
 def main():
     """Interactive CLI to collect user experience and project details and store them in the database."""
@@ -331,9 +546,12 @@ def main():
         console.print("5. View My Experiences")
         console.print("6. View My Projects")
         console.print("7. View All My Data")
-        console.print("8. Exit")
+        console.print("8. Load Data from JSON File")
+        console.print("9. Export Data to JSON File")
+        console.print("10. Delete All My Data")
+        console.print("11. Exit")
         
-        choice = Prompt.ask("Enter your choice", choices=["1", "2", "3", "4", "5", "6", "7", "8"])
+        choice = Prompt.ask("Enter your choice", choices=["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"])
         
         try:
             if choice == "1":
@@ -366,6 +584,15 @@ def main():
                 display_user_projects(user_id)
                 
             elif choice == "8":
+                load_data_from_json(user_id)
+                
+            elif choice == "9":
+                export_data_to_json(user_id)
+                
+            elif choice == "10":
+                delete_all_user_data(user_id)
+                
+            elif choice == "11":
                 if Confirm.ask("Are you sure you want to exit?"):
                     console.print("[green]Thank you for using Resume Builder CLI![/green]")
                     break
