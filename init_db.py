@@ -5,6 +5,8 @@ import os
 
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    DATABASE_URL = "sqlite:///resume.db"
 
 def init_db():
     """Initialize the database by creating all tables."""
