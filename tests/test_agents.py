@@ -11,6 +11,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from dotenv import load_dotenv
 from agents import ResumeAgent, RankingAgent, AgentFactory
+from job_scraper import JobInfo
 
 def test_resume_agent():
     """Test the ResumeAgent with a simple example."""
@@ -399,6 +400,52 @@ def test_ranking_agent_methods():
         print(f"❌ Exception: {e}")
         return False
 
+def test_resume_agent_with_job_info():
+    """Test the ResumeAgent with JobInfo context."""
+    print("\n🎯 Testing ResumeAgent - With JobInfo Context")
+    print("-" * 50)
+    
+    try:
+        # Create agent using factory
+        agent = AgentFactory.create_agent("resume", temperature=1.0)
+        
+        # Create a sample JobInfo object
+        job_info = JobInfo(
+            company_name="NVIDIA",
+            job_title="Software Research Intern - AI Networking Team",
+            location="Santa Clara, CA",
+            job_type="Internship", 
+            description="We are looking for a passionate and talented Software Research Intern to join our AI Networking team. You will work on cutting-edge networking technologies, develop high-performance software solutions, and contribute to research in AI-accelerated networking systems. The role involves working with C++, Python, CUDA, and various networking protocols.",
+            qualifications=[
+                "Strong programming skills in C++ and Python",
+                "Experience with networking protocols and systems", 
+                "Knowledge of CUDA programming and GPU computing",
+                "Understanding of machine learning and AI concepts",
+                "Experience with distributed systems and high-performance computing"
+            ]
+        )
+        
+        # Test experience with job context
+        result = agent.generate_bullet_points_for_experience(
+            experience_id=5,
+            job_info=job_info
+        )
+        
+        if result.get("error"):
+            print(f"❌ Error: {result['error']}")
+            return False
+        
+        print(f"✅ Successfully generated {len(result['bullet_points'])} bullet points with job context")
+        print("Generated bullet points with JobInfo:")
+        for i, bullet in enumerate(result['bullet_points'], 1):
+            print(f"  {i}. {bullet}")
+        
+        return True
+        
+    except Exception as e:
+        print(f"❌ Exception: {e}")
+        return False
+
 def main():
     """Run all tests."""
     load_dotenv()
@@ -419,6 +466,7 @@ def main():
     results.append(("ResumeAgent - Project", test_resume_agent_project()))
     results.append(("ResumeAgent - With Ranking", test_resume_agent_with_ranking()))
     results.append(("ResumeAgent - Generic", test_resume_agent_generic()))
+    results.append(("ResumeAgent - With JobInfo", test_resume_agent_with_job_info()))
     
     # Summary
     print("\n📊 Test Results")

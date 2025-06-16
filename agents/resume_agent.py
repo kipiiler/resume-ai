@@ -6,6 +6,7 @@ from langchain_core.output_parsers import StrOutputParser
 
 from agents.base_agents import BaseAgentState
 from agents.database_agent import DatabaseAgent
+from job_scraper import JobInfo
 
 class ResumeAgentState(BaseAgentState):
     """State for the Resume Agent."""
@@ -14,6 +15,7 @@ class ResumeAgentState(BaseAgentState):
     item_type: str  # "experience" or "project"
     item_data: str  # The formatted experience or project data
     ranking_reason: Optional[str]  # Reason from ranking agent
+    job_info: Optional[JobInfo]  # Job information for context
     bullet_points: List[str]
 
 class ResumeAgent(DatabaseAgent):
@@ -130,6 +132,7 @@ class ResumeAgent(DatabaseAgent):
             item_data = state["item_data"]
             item_type = state.get("item_type", "experience")
             ranking_reason = state.get("ranking_reason", "")
+            job_info = state.get("job_info")
             
             # Create context-aware prompt based on item type
             if item_type == "project":
@@ -142,10 +145,22 @@ class ResumeAgent(DatabaseAgent):
             if ranking_reason:
                 ranking_context = f"\n\nRanking Context: This {item_type} was selected because: {ranking_reason}\nUse this context to emphasize the most relevant aspects in your bullet points."
             
+            # Add job context if provided
+            job_context = ""
+            if job_info:
+                job_context = f"\n\nJob Context:\n"
+                job_context += f"Position: {job_info.job_title} at {job_info.company_name}\n"
+                job_context += f"Location: {job_info.location}\n"
+                job_context += f"Job Type: {job_info.job_type}\n"
+                job_context += f"Description: {job_info.description[:500]}...\n"  # Truncate to avoid token limits
+                job_context += f"Key Qualifications: {'; '.join(job_info.qualifications[:5])}\n"  # First 5 qualifications
+                job_context += "Tailor the bullet points to highlight relevant skills and experiences that match this job posting."
+            
             prompt_input = {
                 "item_data": item_data,
                 "item_type": item_type,
-                "ranking_context": ranking_context
+                "ranking_context": ranking_context,
+                "job_context": job_context
             }
             
             chain = context_prompt | self.llm | StrOutputParser()
@@ -182,12 +197,13 @@ Rules:
 7. Do not use bullet point symbols (*, -, •) - just write the text
 8. Focus on technical details (using specific technologies, algorithms, etc.)
 9. Emphasize professional impact and business value
+10. If job context is provided, tailor bullet points to highlight relevant skills and technologies
 
 Example format:
 Led a team of 5 developers by implementing microservices architecture, which resulted in 40% improved system performance
 Managed full software development lifecycle by establishing CI/CD pipelines, which led to 50% faster deployment cycles
 Optimized database queries by implementing caching strategies, which achieved 60% reduction in response time""",
-            human_message="Generate 3 bullet points for this {item_type}: {item_data}{ranking_context}"
+            human_message="Generate 3 bullet points for this {item_type}: {item_data}{ranking_context}{job_context}"
         )
     
     def _create_project_bullet_prompt(self):
@@ -208,15 +224,16 @@ Rules:
 8. Focus on technical implementation details and innovation
 9. Emphasize problem-solving skills and technical expertise
 10. Highlight learning outcomes and technical growth
+11. If job context is provided, tailor bullet points to highlight relevant skills and technologies
 
 Example format:
 Developed machine learning model by implementing neural networks in TensorFlow, which achieved 95% accuracy in classification tasks
 Built full-stack web application by integrating React frontend with Node.js backend, which demonstrated end-to-end development skills
 Designed scalable database architecture by implementing MongoDB with Redis caching, which supported 10,000+ concurrent users""",
-            human_message="Generate 3 bullet points for this {item_type}: {item_data}{ranking_context}"
+            human_message="Generate 3 bullet points for this {item_type}: {item_data}{ranking_context}{job_context}"
         )
     
-    def generate_bullet_points_for_experience(self, experience_id: int, ranking_reason: Optional[str] = None) -> Dict[str, Any]:
+    def generate_bullet_points_for_experience(self, experience_id: int, ranking_reason: Optional[str] = None, job_info: Optional[JobInfo] = None) -> Dict[str, Any]:
         """Main method to generate bullet points for an experience."""
         initial_state = {
             "messages": [],
@@ -224,6 +241,7 @@ Designed scalable database architecture by implementing MongoDB with Redis cachi
             "item_type": "experience",
             "item_data": "",
             "ranking_reason": ranking_reason,
+            "job_info": job_info,
             "bullet_points": [],
             "error": ""
         }
@@ -231,7 +249,7 @@ Designed scalable database architecture by implementing MongoDB with Redis cachi
         result = self.run(initial_state)
         return result
     
-    def generate_bullet_points_for_project(self, project_id: int, ranking_reason: Optional[str] = None) -> Dict[str, Any]:
+    def generate_bullet_points_for_project(self, project_id: int, ranking_reason: Optional[str] = None, job_info: Optional[JobInfo] = None) -> Dict[str, Any]:
         """Main method to generate bullet points for a project."""
         initial_state = {
             "messages": [],
@@ -239,6 +257,7 @@ Designed scalable database architecture by implementing MongoDB with Redis cachi
             "item_type": "project",
             "item_data": "",
             "ranking_reason": ranking_reason,
+            "job_info": job_info,
             "bullet_points": [],
             "error": ""
         }
@@ -246,12 +265,12 @@ Designed scalable database architecture by implementing MongoDB with Redis cachi
         result = self.run(initial_state)
         return result
     
-    def generate_bullet_points(self, item_id: int, item_type: str = "experience", ranking_reason: Optional[str] = None) -> Dict[str, Any]:
+    def generate_bullet_points(self, item_id: int, item_type: str = "experience", ranking_reason: Optional[str] = None, job_info: Optional[JobInfo] = None) -> Dict[str, Any]:
         """Generic method to generate bullet points for either experience or project."""
         if item_type == "project":
-            return self.generate_bullet_points_for_project(item_id, ranking_reason)
+            return self.generate_bullet_points_for_project(item_id, ranking_reason, job_info)
         else:
-            return self.generate_bullet_points_for_experience(item_id, ranking_reason)
+            return self.generate_bullet_points_for_experience(item_id, ranking_reason, job_info)
     
     def generate_multiple_items(self, items: List[Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
         """Generate bullet points for multiple experiences/projects.
