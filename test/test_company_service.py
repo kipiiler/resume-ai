@@ -4,7 +4,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from model.schema import Company
-from service.company import CompanyService
+from services.company import CompanyService
 from model.database import Base, engine
 
 def init_test_db():

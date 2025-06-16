@@ -5,8 +5,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 from model.schema import User, Project
-from service.user import UserService
-from service.project import ProjectService
+from services.user import UserService
+from services.project import ProjectService
 from model.database import Database, Base, engine
 
 

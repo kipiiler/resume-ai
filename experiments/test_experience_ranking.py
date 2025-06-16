@@ -19,7 +19,7 @@ import json
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from model.schema import Experience, ExperienceDB
-from service.experience import ExperienceService
+from services.experience import ExperienceService
 from job_scraper import JobInfo, extract_job_info
 
 class AgentState(TypedDict):

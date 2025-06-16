@@ -18,8 +18,8 @@ from langchain_core.runnables import RunnablePassthrough
 # Add the parent directory to the path to import services
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from service.experience import ExperienceService
-from service.user import UserService
+from services.experience import ExperienceService
+from services.user import UserService
 
 # Define the state type
 class AgentState(TypedDict):

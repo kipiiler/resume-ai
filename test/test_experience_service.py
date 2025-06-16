@@ -4,8 +4,8 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from model.schema import User, Experience
-from service.user import UserService
-from service.experience import ExperienceService
+from services.user import UserService
+from services.experience import ExperienceService
 from model.database import Database, Base, engine
 
 def init_test_db():
