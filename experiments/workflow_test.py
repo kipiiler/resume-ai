@@ -1,3 +1,4 @@
+from datetime import datetime
 from dotenv import load_dotenv
 load_dotenv()
 import threading
@@ -44,46 +45,64 @@ def generate_resume():
         project_reason = ranked_projects[i][1]
         print(f"Project {i+1}: {project_id} - {project_reason}")
 
+    resume_agent = AgentFactory.create_agent("resume", temperature=1.0)
 
     experience_results = []
     for i in range(NUM_EXPERIENCES):
-        # Create threads for each experience
-        experience_threads = []
-        for i in range(NUM_EXPERIENCES):
-            experience_id = ranked_experiences[i][0]
-            experience_reason = ranked_experiences[i][1]
-            thread = threading.Thread(
-                target=run_resume_agent,
-                args=(experience_id, experience_reason, job_info)
-            )
-            experience_threads.append(thread)
-            thread.start()
-
-        # Wait for all threads to complete
-        for thread in experience_threads:
-            result = thread.join()
-            experience_results.append(result)
+        experience_id = ranked_experiences[i][0]
+        experience_reason = ranked_experiences[i][1]
+        result = resume_agent.generate_bullet_points_for_experience(experience_id, ranking_reason=experience_reason, job_info=job_info)
+        experience_results.append(result)
     
     project_results = []
     for i in range(NUM_PROJECTS):
         project_id = ranked_projects[i][0]
         project_reason = ranked_projects[i][1]
-        print(f"Project {i+1}: {project_id} - {project_reason}")
-        project_threads = []
-        for i in range(NUM_PROJECTS):
-            project_id = ranked_projects[i][0]
-            project_reason = ranked_projects[i][1]
-            thread = threading.Thread(
-                target=run_project_agent,
-                args=(project_id, project_reason, job_info)
-            )
-            project_threads.append(thread)
-            thread.start()
-        for thread in project_threads:
-            result = thread.join()
-            project_results.append(result)
-
+        result = resume_agent.generate_bullet_points_for_project(project_id, ranking_reason=project_reason, job_info=job_info)
+        project_results.append(result)
     
+    print(experience_results)
+    print(project_results)
+
+    # Save results to log file
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    log_filename = f"resume_generation_{timestamp}.log"
+
+    with open(log_filename, "w") as f:
+        f.write("Resume Generation Results\n")
+        f.write("=" * 50 + "\n\n")
+        
+        f.write("Experience Results:\n")
+        f.write("-" * 30 + "\n")
+        for i, result in enumerate(experience_results, 1):
+            f.write(f"\nExperience {i}:\n")
+            f.write(f"ID: {ranked_experiences[i-1][0]}\n")
+            f.write(f"Ranking Reason: {ranked_experiences[i-1][1]}\n")
+            if isinstance(result, dict):
+                if "bullet_points" in result:
+                    f.write("Bullet Points:\n")
+                    for bullet in result["bullet_points"]:
+                        f.write(f"- {bullet}\n")
+                if "error" in result and result["error"]:
+                    f.write(f"Error: {result['error']}\n")
+            f.write("\n")
+            
+        f.write("\nProject Results:\n")
+        f.write("-" * 30 + "\n")
+        for i, result in enumerate(project_results, 1):
+            f.write(f"\nProject {i}:\n")
+            f.write(f"ID: {ranked_projects[i-1][0]}\n")
+            f.write(f"Ranking Reason: {ranked_projects[i-1][1]}\n")
+            if isinstance(result, dict):
+                if "bullet_points" in result:
+                    f.write("Bullet Points:\n")
+                    for bullet in result["bullet_points"]:
+                        f.write(f"- {bullet}\n")
+                if "error" in result and result["error"]:
+                    f.write(f"Error: {result['error']}\n")
+            f.write("\n")
+            
+    print(f"\nResults saved to {log_filename}")
 
 if __name__ == "__main__":
     generate_resume()
