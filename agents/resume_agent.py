@@ -143,8 +143,14 @@ class ResumeAgent(DatabaseAgent):
             # Add ranking reason context if provided
             ranking_context = ""
             if ranking_reason:
-                ranking_context = f"\n\nRanking Context: This {item_type} was selected because: {ranking_reason}\nUse this context to emphasize the most relevant aspects in your bullet points."
-            
+                ranking_context = f"""
+                \n\nRanking Context: This {item_type} was selected because: {ranking_reason}
+                \nUse this context to emphasize the most relevant aspects in your bullet points.
+                \nThere could be multiple reasons for the ranking, so you need to consider all of them.
+                \nAn experience or project can have multiple things that make it relevant to the job. Only include the most relevant ones.
+                \nYou need to generate 3 bullet points for the {item_type} based on the ranking context.
+                """
+
             # Add job context if provided
             job_context = ""
             if job_info:
@@ -154,7 +160,7 @@ class ResumeAgent(DatabaseAgent):
                 job_context += f"Job Type: {job_info.job_type}\n"
                 job_context += f"Description: {job_info.description[:500]}...\n"  # Truncate to avoid token limits
                 job_context += f"Key Qualifications: {'; '.join(job_info.qualifications[:5])}\n"  # First 5 qualifications
-                job_context += "Tailor the bullet points to highlight relevant skills and experiences that match this job posting."
+                job_context += "Tailor the bullet points to highlight relevant skills and experiences that match this job posting and the ranking context."
             
             prompt_input = {
                 "item_data": item_data,
@@ -183,7 +189,7 @@ class ResumeAgent(DatabaseAgent):
     def _create_experience_bullet_prompt(self):
         """Create prompt template for experience bullet points."""
         return self._create_prompt_template(
-            system_message="""You are an expert resume writer. Generate exactly 3 bullet points in the Google XYZ format for the given work experience.
+            system_message="""You are an expert resume writer for software engineers. Generate exactly 3 bullet points in the Google XYZ format for the given work experience.
 
 The XYZ format is: Accomplished [X] by implementing [Y], which led to [Z].
 
@@ -198,6 +204,7 @@ Rules:
 8. Focus on technical details (using specific technologies, algorithms, etc.)
 9. Emphasize professional impact and business value
 10. If job context is provided, tailor bullet points to highlight relevant skills and technologies
+11. Do not include write any generic bullet points (example: Contributed to technical documentation, planning, etc...). Only include thing that is technical and relevant to the job.
 
 Example format:
 Led a team of 5 developers by implementing microservices architecture, which resulted in 40% improved system performance
@@ -209,7 +216,7 @@ Optimized database queries by implementing caching strategies, which achieved 60
     def _create_project_bullet_prompt(self):
         """Create prompt template for project bullet points."""
         return self._create_prompt_template(
-            system_message="""You are an expert resume writer. Generate exactly 3 bullet points in the Google XYZ format for the given project.
+            system_message="""You are an expert resume writer for software engineers. Generate exactly 3 bullet points in the Google XYZ format for the given project.
 
 The XYZ format is: Accomplished [X] by implementing [Y], which led to [Z].
 
@@ -225,6 +232,7 @@ Rules:
 9. Emphasize problem-solving skills and technical expertise
 10. Highlight learning outcomes and technical growth
 11. If job context is provided, tailor bullet points to highlight relevant skills and technologies
+12. Do not include write any generic bullet points (example: Contributed to technical documentation, etc...). Only include thing that is technical and relevant to the job.
 
 Example format:
 Developed machine learning model by implementing neural networks in TensorFlow, which achieved 95% accuracy in classification tasks
