@@ -15,11 +15,15 @@ class RankingAgentState(BaseAgentState):
     job_technical_skills: List[str]
     user_id: int
     experience_list: List[Any]  # List of ExperienceDB objects
+    project_list: List[Any]  # List of ProjectDB objects
     experience_skills_analysis: Dict[str, Any]
+    project_skills_analysis: Dict[str, Any]
     ranked_experiences: List[str]
+    ranked_projects: List[str]
+    ranking_type: str  # "experiences", "projects", or "both"
 
 class RankingAgent(DatabaseAgent, JobAnalysisAgent):
-    """Agent for ranking user experiences based on job posting relevance."""
+    """Agent for ranking user experiences and projects based on job posting relevance."""
     
     def __init__(self, model_name: str = "gemini-2.0-flash-lite", temperature: float = 0.4):
         # Initialize both parent classes
@@ -35,18 +39,18 @@ class RankingAgent(DatabaseAgent, JobAnalysisAgent):
         return {
             "extract_job": self._create_job_extraction_node(),
             "extract_skills": self._create_technical_skills_extraction_node(),
-            "query_experiences": self._create_experience_query_node(),
+            "query_data": self._create_data_query_node(),
             "analyze_skills": self._create_skills_analysis_node(),
-            "rank_experiences": self._create_experience_ranking_node()
+            "rank_items": self._create_ranking_node()
         }
     
     def define_edges(self) -> List[tuple]:
         """Define the edges between nodes."""
         return [
             ("extract_job", "extract_skills"),
-            ("extract_skills", "query_experiences"),
-            ("query_experiences", "analyze_skills"),
-            ("analyze_skills", "rank_experiences")
+            ("extract_skills", "query_data"),
+            ("query_data", "analyze_skills"),
+            ("analyze_skills", "rank_items")
         ]
     
     def get_entry_point(self) -> str:
@@ -61,6 +65,18 @@ class RankingAgent(DatabaseAgent, JobAnalysisAgent):
             return experiences
         except Exception as e:
             print(f"Error querying user experiences: {e}")
+            return []
+    
+    def query_all_user_projects(self, user_id: int) -> List[Any]:
+        """Query all projects for a specific user from the database."""
+        try:
+            # Import here to avoid circular imports
+            from services.project import ProjectService
+            project_service = ProjectService()
+            projects = project_service.get_user_projects(user_id)
+            return projects
+        except Exception as e:
+            print(f"Error querying user projects: {e}")
             return []
     
     def _create_job_extraction_node(self):
@@ -90,40 +106,70 @@ class RankingAgent(DatabaseAgent, JobAnalysisAgent):
         
         return extract_technical_skills
     
-    def _create_experience_query_node(self):
-        """Create node to query all user experiences."""
-        def experience_query(state: RankingAgentState) -> RankingAgentState:
+    def _create_data_query_node(self):
+        """Create node to query user experiences and/or projects based on ranking type."""
+        def data_query(state: RankingAgentState) -> RankingAgentState:
             if state.get("error"):
                 return state  # Pass through error state
             
             try:
                 user_id = state["user_id"]
-                experiences = self.query_all_user_experiences(user_id)
-                return {"experience_list": experiences}
+                ranking_type = state.get("ranking_type", "experiences")
+                
+                result = {}
+                
+                if ranking_type in ["experiences", "both"]:
+                    experiences = self.query_all_user_experiences(user_id)
+                    result["experience_list"] = experiences
+                
+                if ranking_type in ["projects", "both"]:
+                    projects = self.query_all_user_projects(user_id)
+                    result["project_list"] = projects
+                
+                return result
             except Exception as e:
-                return {"error": f"Failed to query user experiences: {str(e)}"}
-        return experience_query
+                return {"error": f"Failed to query user data: {str(e)}"}
+        return data_query
     
     def _create_skills_analysis_node(self):
-        """Create node to analyze skill matches between job and experiences using LLM."""
+        """Create node to analyze skill matches between job and experiences/projects using LLM."""
         def analyze_skills(state: RankingAgentState) -> RankingAgentState:
             if state.get("error"):
                 return state  # Pass through error state
             
             job_skills = state.get("job_technical_skills", [])
-            experiences = state.get("experience_list", [])
+            ranking_type = state.get("ranking_type", "experiences")
             
-            if not experiences:
-                return {"experience_skills_analysis": {}}
+            result = {}
             
-            analysis = {
-                "job_skills": job_skills,
-                "experience_analyses": []
-            }
+            # Analyze experiences if requested
+            if ranking_type in ["experiences", "both"]:
+                experiences = state.get("experience_list", [])
+                if experiences:
+                    exp_analysis = self._analyze_experience_skills(experiences, job_skills)
+                    result["experience_skills_analysis"] = exp_analysis
             
-            # Create skill matching prompt
-            prompt = self._create_prompt_template(
-                system_message="""You are a technical recruiter expert at analyzing skill matches between job requirements and candidate experience.
+            # Analyze projects if requested
+            if ranking_type in ["projects", "both"]:
+                projects = state.get("project_list", [])
+                if projects:
+                    proj_analysis = self._analyze_project_skills(projects, job_skills)
+                    result["project_skills_analysis"] = proj_analysis
+            
+            return result
+        
+        return analyze_skills
+    
+    def _analyze_experience_skills(self, experiences: List[Any], job_skills: List[str]) -> Dict[str, Any]:
+        """Analyze skill matches for experiences."""
+        analysis = {
+            "job_skills": job_skills,
+            "experience_analyses": []
+        }
+        
+        # Create skill matching prompt for experiences
+        prompt = self._create_prompt_template(
+            system_message="""You are a technical recruiter expert at analyzing skill matches between job requirements and candidate experience.
 
 Your task is to analyze how well each candidate's experience matches the required technical skills from a job posting.
 
@@ -160,105 +206,234 @@ Guidelines for skill matching:
 - Calculate percentage: (direct_matches + related_matches * 0.7) / total_job_skills * 100
 
 Be comprehensive in identifying skills from experience descriptions, not just tech_stack lists.""",
-                human_message="""Analyze skill matches for these experiences:
+            human_message="""Analyze skill matches for these experiences:
 
 {experiences_data}
 
 Remember to look for technical skills mentioned in both the tech stack AND the experience descriptions."""
-            )
-            
-            # Format experiences data for analysis
-            experiences_data = []
-            for i, exp in enumerate(experiences):
-                exp_data = f"""
+        )
+        
+        # Format experiences data for analysis
+        experiences_data = []
+        for i, exp in enumerate(experiences):
+            exp_data = f"""
 Experience {i+1}:
 Company: {exp.company_name}
 Tech Stack: {', '.join(exp.tech_stack) if exp.tech_stack else 'None listed'}
 Description: {exp.long_description} {exp.short_description}
 """
-                experiences_data.append(exp_data.strip())
-            
-            formatted_prompt = prompt.format(
-                job_skills=', '.join(job_skills),
-                experiences_data='\n\n'.join(experiences_data)
-            )
-            
-            try:
-                response_text = self._safe_llm_invoke(formatted_prompt, '{"experience_analyses": []}')
-                response_text = self._clean_json_response(response_text)
-                llm_analysis = json.loads(response_text)
-                
-                if "experience_analyses" in llm_analysis:
-                    analysis["experience_analyses"] = llm_analysis["experience_analyses"]
-                else:
-                    raise ValueError("Invalid response structure")
-                
-                return {"experience_skills_analysis": analysis}
-                
-            except Exception as e:
-                print(f"Error in LLM skill analysis: {e}")
-                # Fallback: Simple string-based matching
-                print("Falling back to simple skill matching...")
-                for i, exp in enumerate(experiences):
-                    exp_skills = exp.tech_stack if exp.tech_stack else []
-                    
-                    # Simple string matching as fallback
-                    direct_matches = []
-                    for job_skill in job_skills:
-                        for exp_skill in exp_skills:
-                            if job_skill.lower() == exp_skill.lower():
-                                direct_matches.append(job_skill)
-                    
-                    # Calculate simple match percentage
-                    match_percentage = (len(direct_matches) / len(job_skills) * 100) if job_skills else 0
-                    
-                    exp_analysis = {
-                        "experience_id": i + 1,
-                        "company": exp.company_name,
-                        "experience_skills": exp_skills,
-                        "direct_matches": direct_matches,
-                        "related_matches": [],
-                        "match_percentage": round(match_percentage, 1),
-                        "missing_skills": [skill for skill in job_skills if skill.lower() not in [s.lower() for s in exp_skills]]
-                    }
-                    
-                    analysis["experience_analyses"].append(exp_analysis)
-                
-                return {"experience_skills_analysis": analysis}
+            experiences_data.append(exp_data.strip())
         
-        return analyze_skills
+        formatted_prompt = prompt.format(
+            job_skills=', '.join(job_skills),
+            experiences_data='\n\n'.join(experiences_data)
+        )
+        
+        try:
+            response_text = self._safe_llm_invoke(formatted_prompt, '{"experience_analyses": []}')
+            response_text = self._clean_json_response(response_text)
+            llm_analysis = json.loads(response_text)
+            
+            if "experience_analyses" in llm_analysis:
+                analysis["experience_analyses"] = llm_analysis["experience_analyses"]
+            else:
+                raise ValueError("Invalid response structure")
+            
+        except Exception as e:
+            print(f"Error in LLM experience skill analysis: {e}")
+            # Fallback: Simple string-based matching
+            print("Falling back to simple experience skill matching...")
+            for i, exp in enumerate(experiences):
+                exp_skills = exp.tech_stack if exp.tech_stack else []
+                
+                # Simple string matching as fallback
+                direct_matches = []
+                for job_skill in job_skills:
+                    for exp_skill in exp_skills:
+                        if job_skill.lower() == exp_skill.lower():
+                            direct_matches.append(job_skill)
+                
+                # Calculate simple match percentage
+                match_percentage = (len(direct_matches) / len(job_skills) * 100) if job_skills else 0
+                
+                exp_analysis = {
+                    "experience_id": i + 1,
+                    "company": exp.company_name,
+                    "experience_skills": exp_skills,
+                    "direct_matches": direct_matches,
+                    "related_matches": [],
+                    "match_percentage": round(match_percentage, 1),
+                    "missing_skills": [skill for skill in job_skills if skill.lower() not in [s.lower() for s in exp_skills]]
+                }
+                
+                analysis["experience_analyses"].append(exp_analysis)
+        
+        return analysis
     
-    def _create_experience_ranking_node(self):
-        """Create node to rank experiences based on holistic job relevance assessment."""
-        def experience_ranking(state: RankingAgentState) -> RankingAgentState:
+    def _analyze_project_skills(self, projects: List[Any], job_skills: List[str]) -> Dict[str, Any]:
+        """Analyze skill matches for projects."""
+        analysis = {
+            "job_skills": job_skills,
+            "project_analyses": []
+        }
+        
+        # Create skill matching prompt for projects
+        prompt = self._create_prompt_template(
+            system_message="""You are a technical recruiter expert at analyzing skill matches between job requirements and candidate projects.
+
+Your task is to analyze how well each candidate's project matches the required technical skills from a job posting.
+
+Job Required Technical Skills: {job_skills}
+
+For each project provided, you need to:
+1. Identify all technical skills mentioned in the project (from description and tech stack)
+2. Match these skills against the job requirements
+3. Consider related/equivalent technologies (e.g., React.js ≈ React, PyTorch ≈ TensorFlow for ML)
+4. Calculate a skill match percentage
+5. Identify direct matches, related matches, and missing skills
+
+Return your analysis as a JSON object with this exact structure:
+{{
+    "project_analyses": [
+        {{
+            "project_id": 1,
+            "project_name": "Project Name",
+            "project_skills": ["skill1", "skill2", "skill3"],
+            "direct_matches": ["exact skill matches"],
+            "related_matches": ["job_skill ≈ project_skill"],
+            "match_percentage": 75.5,
+            "missing_skills": ["skills not found in project"]
+        }}
+    ]
+}}
+
+Guidelines for skill matching:
+- Direct match: Exact same technology (Python = Python)
+- Related match: Similar/equivalent technologies (React ≈ React.js, TensorFlow ≈ PyTorch for ML)
+- Consider context: "machine learning" project matches "AI", "deep learning", "neural networks"
+- Programming languages: Consider similar languages as partial matches
+- Frameworks: Consider similar frameworks in same domain as related
+- Calculate percentage: (direct_matches + related_matches * 0.7) / total_job_skills * 100
+
+Be comprehensive in identifying skills from project descriptions, not just tech_stack lists.""",
+            human_message="""Analyze skill matches for these projects:
+
+{projects_data}
+
+Remember to look for technical skills mentioned in both the tech stack AND the project descriptions."""
+        )
+        
+        # Format projects data for analysis
+        projects_data = []
+        for i, proj in enumerate(projects):
+            proj_data = f"""
+Project {i+1}:
+Name: {proj.project_name}
+Tech Stack: {', '.join(proj.tech_stack) if proj.tech_stack else 'None listed'}
+Description: {proj.long_description} {proj.short_description}
+"""
+            projects_data.append(proj_data.strip())
+        
+        formatted_prompt = prompt.format(
+            job_skills=', '.join(job_skills),
+            projects_data='\n\n'.join(projects_data)
+        )
+        
+        try:
+            response_text = self._safe_llm_invoke(formatted_prompt, '{"project_analyses": []}')
+            response_text = self._clean_json_response(response_text)
+            llm_analysis = json.loads(response_text)
+            
+            if "project_analyses" in llm_analysis:
+                analysis["project_analyses"] = llm_analysis["project_analyses"]
+            else:
+                raise ValueError("Invalid response structure")
+            
+        except Exception as e:
+            print(f"Error in LLM project skill analysis: {e}")
+            # Fallback: Simple string-based matching
+            print("Falling back to simple project skill matching...")
+            for i, proj in enumerate(projects):
+                proj_skills = proj.tech_stack if proj.tech_stack else []
+                
+                # Simple string matching as fallback
+                direct_matches = []
+                for job_skill in job_skills:
+                    for proj_skill in proj_skills:
+                        if job_skill.lower() == proj_skill.lower():
+                            direct_matches.append(job_skill)
+                
+                # Calculate simple match percentage
+                match_percentage = (len(direct_matches) / len(job_skills) * 100) if job_skills else 0
+                
+                proj_analysis = {
+                    "project_id": i + 1,
+                    "project_name": proj.project_name,
+                    "project_skills": proj_skills,
+                    "direct_matches": direct_matches,
+                    "related_matches": [],
+                    "match_percentage": round(match_percentage, 1),
+                    "missing_skills": [skill for skill in job_skills if skill.lower() not in [s.lower() for s in proj_skills]]
+                }
+                
+                analysis["project_analyses"].append(proj_analysis)
+        
+        return analysis
+    
+    def _create_ranking_node(self):
+        """Create node to rank experiences and/or projects based on holistic job relevance assessment."""
+        def ranking(state: RankingAgentState) -> RankingAgentState:
             if state.get("error"):
                 return state  # Pass through error state
             
             job_info = state["job_info"]
-            experiences = state["experience_list"]
-            skills_analysis = state.get("experience_skills_analysis", {})
+            ranking_type = state.get("ranking_type", "experiences")
             
-            if not experiences:
-                return {"ranked_experiences": [], "error": "No experiences found for user"}
+            result = {}
             
-            # Format experiences with skill context for holistic ranking
-            experience_descriptions = []
-            for i, exp in enumerate(experiences):
-                # Get skill analysis for this experience
-                exp_analysis = None
-                if skills_analysis and "experience_analyses" in skills_analysis:
-                    exp_analysis = skills_analysis["experience_analyses"][i] if i < len(skills_analysis["experience_analyses"]) else None
-                
-                # Format skill information more naturally
-                skill_context = ""
-                if exp_analysis:
-                    skill_context = f"""
+            # Rank experiences if requested
+            if ranking_type in ["experiences", "both"]:
+                experiences = state.get("experience_list", [])
+                exp_skills_analysis = state.get("experience_skills_analysis", {})
+                if experiences:
+                    ranked_exp = self._rank_experiences(job_info, experiences, exp_skills_analysis)
+                    result["ranked_experiences"] = ranked_exp
+            
+            # Rank projects if requested
+            if ranking_type in ["projects", "both"]:
+                projects = state.get("project_list", [])
+                proj_skills_analysis = state.get("project_skills_analysis", {})
+                if projects:
+                    ranked_proj = self._rank_projects(job_info, projects, proj_skills_analysis)
+                    result["ranked_projects"] = ranked_proj
+            
+            return result
+        
+        return ranking
+    
+    def _rank_experiences(self, job_info: Dict[str, Any], experiences: List[Any], skills_analysis: Dict[str, Any]) -> List[str]:
+        """Rank experiences based on holistic job relevance assessment."""
+        if not experiences:
+            return []
+        
+        # Format experiences with skill context for holistic ranking
+        experience_descriptions = []
+        for i, exp in enumerate(experiences):
+            # Get skill analysis for this experience
+            exp_analysis = None
+            if skills_analysis and "experience_analyses" in skills_analysis:
+                exp_analysis = skills_analysis["experience_analyses"][i] if i < len(skills_analysis["experience_analyses"]) else None
+            
+            # Format skill information more naturally
+            skill_context = ""
+            if exp_analysis:
+                skill_context = f"""
 Technical Background:
 - Technologies Used: {', '.join(exp_analysis['experience_skills']) if exp_analysis['experience_skills'] else 'Not specified'}
 - Relevant Skills for This Role: {', '.join(exp_analysis['direct_matches'] + exp_analysis['related_matches']) if (exp_analysis['direct_matches'] or exp_analysis['related_matches']) else 'Limited overlap'}
 - Additional Context: {f"Strong match in {len(exp_analysis['direct_matches'])} core areas" if exp_analysis['direct_matches'] else "Transferable technical foundation"}"""
-                
-                exp_text = f"""
+            
+            exp_text = f"""
 Experience {i+1}:
 Company: {exp.company_name} ({exp.company_location})
 Duration: {exp.start_date} to {exp.end_date}
@@ -266,12 +441,12 @@ Role Description: {exp.long_description}
 Key Achievements: {exp.short_description}
 {skill_context}
 """
-                experience_descriptions.append(exp_text.strip())
-            
-            # Create holistic ranking prompt
-            job_skills = skills_analysis.get("job_skills", [])
-            prompt = self._create_prompt_template(
-                system_message="""You are an experienced hiring manager at {company_name} evaluating candidates for the {job_title} position.
+            experience_descriptions.append(exp_text.strip())
+        
+        # Create holistic ranking prompt
+        job_skills = skills_analysis.get("job_skills", [])
+        prompt = self._create_prompt_template(
+            system_message="""You are an experienced hiring manager at {company_name} evaluating candidates for the {job_title} position.
 
 Your task is to rank the candidate's experiences based on overall fit and potential for success in this role.
 
@@ -308,53 +483,169 @@ Return ONLY a JSON array of strings explaining your ranking decisions:
  "Experience Z: Solid option with [balanced view of strengths and development areas]"]
 
 Focus on the person's journey, achievements, and potential rather than just technical checklist matching.""",
-                human_message="Evaluate and rank these experiences for overall fit:\n\n{experiences}"
-            )
-            
-            # Format the prompt with job and experience data
-            formatted_prompt = prompt.format(
-                company_name=job_info.get("company_name", "Unknown Company"),
-                job_title=job_info.get("job_title", "Unknown Position"),
-                location=job_info.get("location", "Unknown Location"),
-                job_type=job_info.get("job_type", "Unknown Type"),
-                description=job_info.get("description", "No description available"),
-                qualifications=", ".join(job_info.get("qualifications", [])),
-                technical_skills=", ".join(job_skills) if job_skills else "Various technical skills",
-                experiences="\n\n".join(experience_descriptions)
-            )
-            
-            try:
-                response_text = self._safe_llm_invoke(formatted_prompt, "[]")
-                response_text = self._clean_json_response(response_text)
-                ranked_list = json.loads(response_text)
-                
-                if not isinstance(ranked_list, list):
-                    raise ValueError("Response is not a list")
-                
-                return {"ranked_experiences": ranked_list}
-                
-            except Exception as e:
-                print(f"Error in holistic ranking: {e}")
-                
-                # Fallback: Create balanced ranking considering multiple factors
-                fallback_ranking = []
-                for i, exp in enumerate(experiences):
-                    # Create a balanced assessment
-                    skill_info = ""
-                    if skills_analysis and "experience_analyses" in skills_analysis and i < len(skills_analysis["experience_analyses"]):
-                        exp_analysis = skills_analysis["experience_analyses"][i]
-                        if exp_analysis['direct_matches'] or exp_analysis['related_matches']:
-                            skill_info = f" with relevant technical background in {', '.join((exp_analysis['direct_matches'] + exp_analysis['related_matches'])[:3])}"
-                        else:
-                            skill_info = " with transferable technical foundation"
-                    
-                    fallback_ranking.append(
-                        f"Experience {i+1}: {exp.company_name} - {exp.short_description[:100]}...{skill_info}"
-                    )
-                
-                return {"ranked_experiences": fallback_ranking}
+            human_message="Evaluate and rank these experiences for overall fit:\n\n{experiences}"
+        )
         
-        return experience_ranking
+        # Format the prompt with job and experience data
+        formatted_prompt = prompt.format(
+            company_name=job_info.get("company_name", "Unknown Company"),
+            job_title=job_info.get("job_title", "Unknown Position"),
+            location=job_info.get("location", "Unknown Location"),
+            job_type=job_info.get("job_type", "Unknown Type"),
+            description=job_info.get("description", "No description available"),
+            qualifications=", ".join(job_info.get("qualifications", [])),
+            technical_skills=", ".join(job_skills) if job_skills else "Various technical skills",
+            experiences="\n\n".join(experience_descriptions)
+        )
+        
+        try:
+            response_text = self._safe_llm_invoke(formatted_prompt, "[]")
+            response_text = self._clean_json_response(response_text)
+            ranked_list = json.loads(response_text)
+            
+            if not isinstance(ranked_list, list):
+                raise ValueError("Response is not a list")
+            
+            return ranked_list
+            
+        except Exception as e:
+            print(f"Error in holistic experience ranking: {e}")
+            
+            # Fallback: Create balanced ranking considering multiple factors
+            fallback_ranking = []
+            for i, exp in enumerate(experiences):
+                # Create a balanced assessment
+                skill_info = ""
+                if skills_analysis and "experience_analyses" in skills_analysis and i < len(skills_analysis["experience_analyses"]):
+                    exp_analysis = skills_analysis["experience_analyses"][i]
+                    if exp_analysis['direct_matches'] or exp_analysis['related_matches']:
+                        skill_info = f" with relevant technical background in {', '.join((exp_analysis['direct_matches'] + exp_analysis['related_matches'])[:3])}"
+                    else:
+                        skill_info = " with transferable technical foundation"
+                
+                fallback_ranking.append(
+                    f"Experience {i+1}: {exp.company_name} - {exp.short_description[:100]}...{skill_info}"
+                )
+            
+            return fallback_ranking
+    
+    def _rank_projects(self, job_info: Dict[str, Any], projects: List[Any], skills_analysis: Dict[str, Any]) -> List[str]:
+        """Rank projects based on holistic job relevance assessment."""
+        if not projects:
+            return []
+        
+        # Format projects with skill context for holistic ranking
+        project_descriptions = []
+        for i, proj in enumerate(projects):
+            # Get skill analysis for this project
+            proj_analysis = None
+            if skills_analysis and "project_analyses" in skills_analysis:
+                proj_analysis = skills_analysis["project_analyses"][i] if i < len(skills_analysis["project_analyses"]) else None
+            
+            # Format skill information more naturally
+            skill_context = ""
+            if proj_analysis:
+                skill_context = f"""
+Technical Background:
+- Technologies Used: {', '.join(proj_analysis['project_skills']) if proj_analysis['project_skills'] else 'Not specified'}
+- Relevant Skills for This Role: {', '.join(proj_analysis['direct_matches'] + proj_analysis['related_matches']) if (proj_analysis['direct_matches'] or proj_analysis['related_matches']) else 'Limited overlap'}
+- Additional Context: {f"Strong match in {len(proj_analysis['direct_matches'])} core areas" if proj_analysis['direct_matches'] else "Transferable technical foundation"}"""
+            
+            proj_text = f"""
+Project {i+1}:
+Name: {proj.project_name}
+Duration: {proj.start_date} to {proj.end_date}
+Description: {proj.long_description}
+Key Achievements: {proj.short_description}
+{skill_context}
+"""
+            project_descriptions.append(proj_text.strip())
+        
+        # Create holistic ranking prompt for projects
+        job_skills = skills_analysis.get("job_skills", [])
+        prompt = self._create_prompt_template(
+            system_message="""You are an experienced hiring manager at {company_name} evaluating candidate projects for the {job_title} position.
+
+Your task is to rank the candidate's projects based on overall relevance and potential for success in this role.
+
+Job Context:
+- Company: {company_name}
+- Position: {job_title}
+- Location: {location}
+- Job Type: {job_type}
+- Role Description: {description}
+- Key Requirements: {qualifications}
+- Important Technical Areas: {technical_skills}
+
+Evaluation Approach:
+Rather than focusing solely on exact skill matches, consider the COMPLETE picture:
+
+1. **Problem-Solving Alignment**: How similar are the challenges solved to what this role requires?
+2. **Technical Complexity**: Evidence of handling complex technical problems and architectures
+3. **Impact & Innovation**: The scope, significance, and creativity of their solutions
+4. **Technical Foundation**: Solid fundamentals demonstrated through project implementation
+5. **Domain Relevance**: Project domain knowledge that transfers to this role
+6. **Implementation Quality**: Evidence of good engineering practices and thorough execution
+
+Instructions:
+- Read each project holistically - consider the full context, not just skill checklists
+- Look for evidence of technical depth, problem-solving ability, and innovation
+- Consider how their project experience prepares them for this specific role
+- Value complexity of implementation and demonstrated results over perfect skill alignment
+- Think about technical capabilities and problem-solving approach demonstrated
+- Rank from most relevant and impressive project to least relevant
+
+Return ONLY a JSON array of strings explaining your ranking decisions:
+["Project X: Best fit because [holistic reasoning about technical relevance, complexity, and innovation]",
+ "Project Y: Strong relevance due to [comprehensive assessment of technical factors]",
+ "Project Z: Good option with [balanced view of technical strengths and applicability]"]
+
+Focus on technical execution, problem-solving approach, and relevance to the target role.""",
+            human_message="Evaluate and rank these projects for overall relevance:\n\n{projects}"
+        )
+        
+        # Format the prompt with job and project data
+        formatted_prompt = prompt.format(
+            company_name=job_info.get("company_name", "Unknown Company"),
+            job_title=job_info.get("job_title", "Unknown Position"),
+            location=job_info.get("location", "Unknown Location"),
+            job_type=job_info.get("job_type", "Unknown Type"),
+            description=job_info.get("description", "No description available"),
+            qualifications=", ".join(job_info.get("qualifications", [])),
+            technical_skills=", ".join(job_skills) if job_skills else "Various technical skills",
+            projects="\n\n".join(project_descriptions)
+        )
+        
+        try:
+            response_text = self._safe_llm_invoke(formatted_prompt, "[]")
+            response_text = self._clean_json_response(response_text)
+            ranked_list = json.loads(response_text)
+            
+            if not isinstance(ranked_list, list):
+                raise ValueError("Response is not a list")
+            
+            return ranked_list
+            
+        except Exception as e:
+            print(f"Error in holistic project ranking: {e}")
+            
+            # Fallback: Create balanced ranking considering multiple factors
+            fallback_ranking = []
+            for i, proj in enumerate(projects):
+                # Create a balanced assessment
+                skill_info = ""
+                if skills_analysis and "project_analyses" in skills_analysis and i < len(skills_analysis["project_analyses"]):
+                    proj_analysis = skills_analysis["project_analyses"][i]
+                    if proj_analysis['direct_matches'] or proj_analysis['related_matches']:
+                        skill_info = f" with relevant technical background in {', '.join((proj_analysis['direct_matches'] + proj_analysis['related_matches'])[:3])}"
+                    else:
+                        skill_info = " with transferable technical foundation"
+                
+                fallback_ranking.append(
+                    f"Project {i+1}: {proj.project_name} - {proj.short_description[:100]}...{skill_info}"
+                )
+            
+            return fallback_ranking
     
     def rank_experiences(self, job_posting_url: str, user_id: int) -> Dict[str, Any]:
         """Main method to rank user experiences based on a job posting."""
@@ -365,8 +656,54 @@ Focus on the person's journey, achievements, and potential rather than just tech
             "job_technical_skills": [],
             "user_id": user_id,
             "experience_list": [],
+            "project_list": [],
             "experience_skills_analysis": {},
+            "project_skills_analysis": {},
             "ranked_experiences": [],
+            "ranked_projects": [],
+            "ranking_type": "experiences",
+            "error": ""
+        }
+        
+        result = self.run(initial_state)
+        return result
+    
+    def rank_projects(self, job_posting_url: str, user_id: int) -> Dict[str, Any]:
+        """Main method to rank user projects based on a job posting."""
+        initial_state = {
+            "messages": [],
+            "job_posting_url": job_posting_url,
+            "job_info": {},
+            "job_technical_skills": [],
+            "user_id": user_id,
+            "experience_list": [],
+            "project_list": [],
+            "experience_skills_analysis": {},
+            "project_skills_analysis": {},
+            "ranked_experiences": [],
+            "ranked_projects": [],
+            "ranking_type": "projects",
+            "error": ""
+        }
+        
+        result = self.run(initial_state)
+        return result
+    
+    def rank_both(self, job_posting_url: str, user_id: int) -> Dict[str, Any]:
+        """Main method to rank both user experiences and projects based on a job posting."""
+        initial_state = {
+            "messages": [],
+            "job_posting_url": job_posting_url,
+            "job_info": {},
+            "job_technical_skills": [],
+            "user_id": user_id,
+            "experience_list": [],
+            "project_list": [],
+            "experience_skills_analysis": {},
+            "project_skills_analysis": {},
+            "ranked_experiences": [],
+            "ranked_projects": [],
+            "ranking_type": "both",
             "error": ""
         }
         
@@ -379,26 +716,41 @@ Focus on the person's journey, achievements, and potential rather than just tech
             return {"error": result["error"]}
         
         job_info = result.get("job_info", {})
-        skills_analysis = result.get("experience_skills_analysis", {})
+        exp_skills_analysis = result.get("experience_skills_analysis", {})
+        proj_skills_analysis = result.get("project_skills_analysis", {})
         
         summary = {
             "job_title": job_info.get("job_title", "Unknown"),
             "company": job_info.get("company_name", "Unknown"),
             "technical_skills_required": result.get("job_technical_skills", []),
             "experiences_analyzed": len(result.get("experience_list", [])),
-            "rankings": result.get("ranked_experiences", [])
+            "projects_analyzed": len(result.get("project_list", [])),
+            "experience_rankings": result.get("ranked_experiences", []),
+            "project_rankings": result.get("ranked_projects", [])
         }
         
-        # Add skill match summary
-        if skills_analysis and "experience_analyses" in skills_analysis:
-            summary["skill_matches"] = [
+        # Add experience skill match summary
+        if exp_skills_analysis and "experience_analyses" in exp_skills_analysis:
+            summary["experience_skill_matches"] = [
                 {
                     "company": exp["company"],
                     "match_percentage": exp["match_percentage"],
                     "direct_matches": len(exp["direct_matches"]),
                     "related_matches": len(exp["related_matches"])
                 }
-                for exp in skills_analysis["experience_analyses"]
+                for exp in exp_skills_analysis["experience_analyses"]
+            ]
+        
+        # Add project skill match summary
+        if proj_skills_analysis and "project_analyses" in proj_skills_analysis:
+            summary["project_skill_matches"] = [
+                {
+                    "project_name": proj["project_name"],
+                    "match_percentage": proj["match_percentage"],
+                    "direct_matches": len(proj["direct_matches"]),
+                    "related_matches": len(proj["related_matches"])
+                }
+                for proj in proj_skills_analysis["project_analyses"]
             ]
         
         return summary 

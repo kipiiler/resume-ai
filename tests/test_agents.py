@@ -3,6 +3,12 @@ Simple test script for the abstracted agents.
 Run this from the project root directory.
 """
 
+import os
+import sys
+
+# Add the parent directory to the path to import services
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from dotenv import load_dotenv
 from agents import ResumeAgent, RankingAgent, AgentFactory
 
@@ -32,10 +38,10 @@ def test_resume_agent():
         print(f"❌ Exception: {e}")
         return False
 
-def test_ranking_agent():
-    """Test the RankingAgent with a simple example."""
-    print("\n🏆 Testing RankingAgent")
-    print("-" * 40)
+def test_ranking_agent_experiences():
+    """Test the RankingAgent experience ranking functionality."""
+    print("\n🏆 Testing RankingAgent - Experience Ranking")
+    print("-" * 50)
     
     try:
         # Create agent using direct instantiation
@@ -53,12 +59,94 @@ def test_ranking_agent():
         summary = agent.get_ranking_summary(result)
         print(f"✅ Successfully analyzed {summary['experiences_analyzed']} experiences")
         print(f"Job: {summary['job_title']} at {summary['company']}")
-        print(f"Generated {len(summary['rankings'])} rankings")
+        print(f"Generated {len(summary.get('experience_rankings', []))} experience rankings")
         
         # Show first ranking as example
-        if summary['rankings']:
-            print("Sample ranking:")
-            print(f"  • {summary['rankings'][0][:100]}...")
+        if summary.get('experience_rankings'):
+            print("Sample experience ranking:")
+            print(f"  • {summary['experience_rankings'][0][:100]}...")
+        
+        return True
+        
+    except Exception as e:
+        print(f"❌ Exception: {e}")
+        return False
+
+def test_ranking_agent_projects():
+    """Test the RankingAgent project ranking functionality."""
+    print("\n🎯 Testing RankingAgent - Project Ranking")
+    print("-" * 50)
+    
+    try:
+        # Create agent using direct instantiation
+        agent = RankingAgent(temperature=0.4)
+        
+        # Test with a sample job URL
+        job_url = "https://nvidia.wd5.myworkdayjobs.com/en-US/NVIDIAExternalCareerSite/job/US-CA-Santa-Clara/Software-Research-Intern--AI-Networking-Team---Fall-2025_JR1998253"
+        
+        result = agent.rank_projects(job_url, user_id=1)
+        
+        if result.get("error"):
+            print(f"❌ Error: {result['error']}")
+            return False
+        
+        summary = agent.get_ranking_summary(result)
+        print(f"✅ Successfully analyzed {summary['projects_analyzed']} projects")
+        print(f"Job: {summary['job_title']} at {summary['company']}")
+        print(f"Generated {len(summary.get('project_rankings', []))} project rankings")
+        
+        # Show first ranking as example
+        if summary.get('project_rankings'):
+            print("Sample project ranking:")
+            print(f"  • {summary['project_rankings'][0][:100]}...")
+        
+        # Show skill match info if available
+        if summary.get('project_skill_matches'):
+            print("Project skill matches:")
+            for match in summary['project_skill_matches'][:2]:  # Show first 2
+                print(f"  • {match['project_name']}: {match['match_percentage']:.1f}% match")
+        
+        return True
+        
+    except Exception as e:
+        print(f"❌ Exception: {e}")
+        return False
+
+def test_ranking_agent_both():
+    """Test the RankingAgent ranking both experiences and projects."""
+    print("\n🎯🏆 Testing RankingAgent - Both Experiences & Projects")
+    print("-" * 60)
+    
+    try:
+        # Create agent using direct instantiation
+        agent = RankingAgent(temperature=0.4)
+        
+        # Test with a sample job URL
+        job_url = "https://nvidia.wd5.myworkdayjobs.com/en-US/NVIDIAExternalCareerSite/job/US-CA-Santa-Clara/Software-Research-Intern--AI-Networking-Team---Fall-2025_JR1998253"
+        
+        result = agent.rank_both(job_url, user_id=1)
+        
+        if result.get("error"):
+            print(f"❌ Error: {result['error']}")
+            return False
+        
+        summary = agent.get_ranking_summary(result)
+        print(f"✅ Successfully analyzed {summary['experiences_analyzed']} experiences and {summary['projects_analyzed']} projects")
+        print(f"Job: {summary['job_title']} at {summary['company']}")
+        
+        # Show experience rankings
+        exp_rankings = summary.get('experience_rankings', [])
+        proj_rankings = summary.get('project_rankings', [])
+        
+        print(f"Generated {len(exp_rankings)} experience rankings and {len(proj_rankings)} project rankings")
+        
+        if exp_rankings:
+            print("Top experience ranking:")
+            print(f"  • {exp_rankings}...")
+        
+        if proj_rankings:
+            print("Top project ranking:")
+            print(f"  • {proj_rankings}...")
         
         return True
         
@@ -135,6 +223,57 @@ def test_agent_structure():
         print(f"ResumeAgent nodes: {len(resume_agent.create_nodes())}")
         print(f"RankingAgent nodes: {len(ranking_agent.create_nodes())}")
         
+        # Test new ranking agent methods
+        ranking_methods = ['rank_experiences', 'rank_projects', 'rank_both', 'query_all_user_projects']
+        for method in ranking_methods:
+            if not hasattr(ranking_agent, method):
+                print(f"❌ RankingAgent missing new method: {method}")
+                return False
+        print("✅ RankingAgent has all new project ranking methods")
+        
+        return True
+        
+    except Exception as e:
+        print(f"❌ Exception: {e}")
+        return False
+
+def test_ranking_agent_methods():
+    """Test that RankingAgent has all the expected ranking methods."""
+    print("\n🧪 Testing RankingAgent Methods")
+    print("-" * 40)
+    
+    try:
+        agent = RankingAgent()
+        
+        # Test that all ranking methods exist
+        methods_to_test = [
+            ('rank_experiences', 'Rank experiences only'),
+            ('rank_projects', 'Rank projects only'),
+            ('rank_both', 'Rank both experiences and projects'),
+            ('query_all_user_experiences', 'Query user experiences'),
+            ('query_all_user_projects', 'Query user projects'),
+            ('get_ranking_summary', 'Get ranking summary')
+        ]
+        
+        for method_name, description in methods_to_test:
+            if hasattr(agent, method_name):
+                print(f"✅ {method_name}: {description}")
+            else:
+                print(f"❌ Missing method: {method_name}")
+                return False
+        
+        # Test that the state class includes project fields
+        state_class = agent.get_state_class()
+        state_annotations = getattr(state_class, '__annotations__', {})
+        
+        required_fields = ['project_list', 'project_skills_analysis', 'ranked_projects', 'ranking_type']
+        for field in required_fields:
+            if field in state_annotations:
+                print(f"✅ State has field: {field}")
+            else:
+                print(f"❌ Missing state field: {field}")
+                return False
+        
         return True
         
     except Exception as e:
@@ -145,38 +284,42 @@ def main():
     """Run all tests."""
     load_dotenv()
     
-    print("🧪 Agent Abstraction Tests")
-    print("=" * 50)
+    print("🧪 Agent Abstraction Tests - Enhanced with Project Ranking")
+    print("=" * 70)
     
     results = []
     
     # Run tests
     results.append(("Factory", test_factory()))
     results.append(("Agent Structure", test_agent_structure()))
+    results.append(("RankingAgent Methods", test_ranking_agent_methods()))
     results.append(("ResumeAgent", test_resume_agent()))
-    results.append(("RankingAgent", test_ranking_agent()))
+    results.append(("RankingAgent - Experiences", test_ranking_agent_experiences()))
+    results.append(("RankingAgent - Projects", test_ranking_agent_projects()))
+    results.append(("RankingAgent - Both", test_ranking_agent_both()))
     
     # Summary
     print("\n📊 Test Results")
-    print("=" * 50)
+    print("=" * 70)
     
     passed = 0
     for test_name, success in results:
         status = "✅ PASS" if success else "❌ FAIL"
-        print(f"{test_name:15} {status}")
+        print(f"{test_name:25} {status}")
         if success:
             passed += 1
     
     print(f"\nPassed: {passed}/{len(results)} tests")
     
     if passed == len(results):
-        print("🎉 All tests passed! The refactored agent abstraction is working correctly.")
+        print("🎉 All tests passed! The enhanced agent abstraction with project ranking is working correctly.")
     else:
         print("⚠️  Some tests failed. Check your configuration:")
         print("1. Ensure GOOGLE_API_KEY is set in .env")
         print("2. Verify database is accessible")
-        print("3. Check that experience data exists")
+        print("3. Check that experience and project data exists")
         print("4. Ensure all service imports are correct")
+        print("5. Verify ProjectService is properly implemented")
 
 if __name__ == "__main__":
     main() 
