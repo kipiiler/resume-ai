@@ -14,7 +14,7 @@ from agents import ResumeAgent, RankingAgent, AgentFactory
 
 def test_resume_agent():
     """Test the ResumeAgent with a simple example."""
-    print("🚀 Testing ResumeAgent")
+    print("🚀 Testing ResumeAgent - Experience")
     print("-" * 40)
     
     try:
@@ -22,7 +22,7 @@ def test_resume_agent():
         agent = AgentFactory.create_agent("resume", temperature=1.0)
         
         # Test with experience ID 5 (as used in the original tests)
-        result = agent.generate_bullet_points(experience_id=5)
+        result = agent.generate_bullet_points_for_experience(experience_id=5)
         
         if result.get("error"):
             print(f"❌ Error: {result['error']}")
@@ -32,6 +32,97 @@ def test_resume_agent():
         print("Generated bullet points:")
         for i, bullet in enumerate(result['bullet_points'], 1):
             print(f"  {i}. {bullet}")
+        return True
+        
+    except Exception as e:
+        print(f"❌ Exception: {e}")
+        return False
+
+def test_resume_agent_project():
+    """Test the ResumeAgent with project bullet point generation."""
+    print("\n🎯 Testing ResumeAgent - Project")
+    print("-" * 40)
+    
+    try:
+        # Create agent using factory
+        agent = AgentFactory.create_agent("resume", temperature=1.0)
+        
+        # Test with project ID 1
+        result = agent.generate_bullet_points_for_project(project_id=1)
+        
+        if result.get("error"):
+            print(f"❌ Error: {result['error']}")
+            return False
+        
+        print(f"✅ Successfully generated {len(result['bullet_points'])} project bullet points")
+        print("Generated project bullet points:")
+        for i, bullet in enumerate(result['bullet_points'], 1):
+            print(f"  {i}. {bullet}")
+        return True
+        
+    except Exception as e:
+        print(f"❌ Exception: {e}")
+        return False
+
+def test_resume_agent_with_ranking():
+    """Test the ResumeAgent with ranking reason context."""
+    print("\n🎯🏆 Testing ResumeAgent - With Ranking Context")
+    print("-" * 50)
+    
+    try:
+        # Create agent using factory
+        agent = AgentFactory.create_agent("resume", temperature=1.0)
+        
+        # Test with ranking reason
+        ranking_reason = "Good fit because the experience demonstrates strong C++ skills, which is a core requirement. The use of CMake aligns with the job description. While not directly related to networking, the project's focus on modular design, performance tuning, and problem-solving in a complex software environment indicates a solid technical foundation and the ability to learn and adapt to the networking-specific challenges of the role."
+        
+        # Test experience with ranking context
+        result = agent.generate_bullet_points_for_experience(
+            experience_id=2, 
+            ranking_reason=ranking_reason
+        )
+        
+        if result.get("error"):
+            print(f"❌ Error: {result['error']}")
+            return False
+        
+        print(f"✅ Successfully generated {len(result['bullet_points'])} contextual bullet points")
+        print("Generated bullet points with ranking context:")
+        for i, bullet in enumerate(result['bullet_points'], 1):
+            print(f"  {i}. {bullet}")
+        
+        return True
+        
+    except Exception as e:
+        print(f"❌ Exception: {e}")
+        return False
+
+def test_resume_agent_generic():
+    """Test the generic generate_bullet_points method."""
+    print("\n🔧 Testing ResumeAgent - Generic Method")
+    print("-" * 45)
+    
+    try:
+        agent = AgentFactory.create_agent("resume", temperature=1.0)
+        
+        # Test generic method with experience
+        exp_result = agent.generate_bullet_points(item_id=5, item_type="experience")
+        
+        if exp_result.get("error"):
+            print(f"❌ Experience Error: {exp_result['error']}")
+            return False
+        
+        print(f"✅ Generic method - Experience: {len(exp_result['bullet_points'])} bullet points")
+        
+        # Test generic method with project
+        proj_result = agent.generate_bullet_points(item_id=1, item_type="project")
+        
+        if proj_result.get("error"):
+            print(f"❌ Project Error: {proj_result['error']}")
+            return False
+        
+        print(f"✅ Generic method - Project: {len(proj_result['bullet_points'])} bullet points")
+        
         return True
         
     except Exception as e:
@@ -251,6 +342,14 @@ def test_agent_structure():
                 return False
         print("✅ RankingAgent has all new project ranking methods")
         
+        # Test new resume agent methods
+        resume_methods = ['generate_bullet_points_for_experience', 'generate_bullet_points_for_project', 'query_project_from_db']
+        for method in resume_methods:
+            if not hasattr(resume_agent, method):
+                print(f"❌ ResumeAgent missing new method: {method}")
+                return False
+        print("✅ ResumeAgent has all new project methods")
+        
         return True
         
     except Exception as e:
@@ -304,7 +403,7 @@ def main():
     """Run all tests."""
     load_dotenv()
     
-    print("🧪 Agent Abstraction Tests - Enhanced with Project Ranking")
+    print("🧪 Agent Abstraction Tests - Enhanced with Project Support")
     print("=" * 70)
     
     results = []
@@ -316,7 +415,10 @@ def main():
     # results.append(("ResumeAgent", test_resume_agent()))
     # results.append(("RankingAgent - Experiences", test_ranking_agent_experiences()))
     # results.append(("RankingAgent - Projects", test_ranking_agent_projects()))
-    results.append(("RankingAgent - Both", test_ranking_agent_both()))
+    # results.append(("RankingAgent - Both", test_ranking_agent_both()))
+    results.append(("ResumeAgent - Project", test_resume_agent_project()))
+    results.append(("ResumeAgent - With Ranking", test_resume_agent_with_ranking()))
+    results.append(("ResumeAgent - Generic", test_resume_agent_generic()))
     
     # Summary
     print("\n📊 Test Results")
@@ -332,7 +434,7 @@ def main():
     print(f"\nPassed: {passed}/{len(results)} tests")
     
     if passed == len(results):
-        print("🎉 All tests passed! The enhanced agent abstraction with project ranking is working correctly.")
+        print("🎉 All tests passed! The enhanced agent abstraction with project support is working correctly.")
     else:
         print("⚠️  Some tests failed. Check your configuration:")
         print("1. Ensure GOOGLE_API_KEY is set in .env")

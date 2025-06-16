@@ -1,5 +1,5 @@
 import re
-from typing import TypedDict, Annotated, Sequence, Dict, Any, Callable, List
+from typing import TypedDict, Annotated, Sequence, Dict, Any, Callable, List, Optional
 import operator
 from langchain_core.messages import HumanMessage, AIMessage
 from langchain_core.output_parsers import StrOutputParser
@@ -10,12 +10,14 @@ from agents.database_agent import DatabaseAgent
 class ResumeAgentState(BaseAgentState):
     """State for the Resume Agent."""
     messages: Annotated[Sequence[HumanMessage | AIMessage], operator.add]
-    experience_id: int
-    experience: str
+    item_id: int  # Can be experience_id or project_id
+    item_type: str  # "experience" or "project"
+    item_data: str  # The formatted experience or project data
+    ranking_reason: Optional[str]  # Reason from ranking agent
     bullet_points: List[str]
 
 class ResumeAgent(DatabaseAgent):
-    """Agent for generating resume bullet points from experience data."""
+    """Agent for generating resume bullet points from experience or project data."""
     
     def __init__(self, model_name: str = "gemini-2.0-flash-lite", temperature: float = 1.0):
         super().__init__(model_name, temperature)
@@ -27,19 +29,19 @@ class ResumeAgent(DatabaseAgent):
     def create_nodes(self) -> Dict[str, Callable]:
         """Create all nodes for the resume agent."""
         return {
-            "query_experience": self._create_experience_query_node(),
+            "query_data": self._create_data_query_node(),
             "generate_bullet_points": self._create_bullet_point_generator()
         }
     
     def define_edges(self) -> List[tuple]:
         """Define the edges between nodes."""
         return [
-            ("query_experience", "generate_bullet_points")
+            ("query_data", "generate_bullet_points")
         ]
     
     def get_entry_point(self) -> str:
         """Return the entry point node name."""
-        return "query_experience"
+        return "query_data"
     
     def query_experience_from_db(self, experience_id: int) -> str:
         """Query experience details from the database using ExperienceService."""
@@ -61,13 +63,43 @@ class ResumeAgent(DatabaseAgent):
         except Exception as e:
             return f"Error querying experience: {str(e)}"
     
-    def _create_experience_query_node(self):
-        """Create the experience query node."""
-        def experience_query(state: ResumeAgentState) -> ResumeAgentState:
-            experience_id = state.get("experience_id", 1)  # Default to ID 1 if not provided
-            experience = self.query_experience_from_db(experience_id)
-            return {"experience": experience}
-        return experience_query
+    def query_project_from_db(self, project_id: int) -> str:
+        """Query project details from the database using ProjectService."""
+        try:
+            # Import here to avoid circular imports
+            from services.project import ProjectService
+            project_service = ProjectService()
+            project = project_service.get_project(project_id)
+            
+            if project:
+                # Format the project data into a comprehensive description
+                description = f"""
+                Project Name: {project.project_name}
+                Duration: {project.start_date} to {project.end_date}
+                Description: {project.long_description + " " + project.short_description}
+                Tech Stack: {', '.join(project.tech_stack) if project.tech_stack else 'Not specified'}
+                """
+                return description.strip()
+            else:
+                return f"Project with ID {project_id} not found"
+        except Exception as e:
+            return f"Error querying project: {str(e)}"
+    
+    def _create_data_query_node(self):
+        """Create the data query node that handles both experiences and projects."""
+        def data_query(state: ResumeAgentState) -> ResumeAgentState:
+            item_id = state.get("item_id", 1)
+            item_type = state.get("item_type", "experience")
+            
+            if item_type == "experience":
+                item_data = self.query_experience_from_db(item_id)
+            elif item_type == "project":
+                item_data = self.query_project_from_db(item_id)
+            else:
+                item_data = f"Unknown item type: {item_type}"
+            
+            return {"item_data": item_data}
+        return data_query
     
     def _parse_bullet_points(self, text: str) -> List[str]:
         """Parse bullet points from the LLM output, handling various formats."""
@@ -94,8 +126,49 @@ class ResumeAgent(DatabaseAgent):
     
     def _create_bullet_point_generator(self):
         """Create the bullet point generation node."""
-        prompt = self._create_prompt_template(
-            system_message="""You are an expert resume writer. Generate exactly 3 bullet points in the Google XYZ format for the given experience.
+        def generate_bullet_points(state: ResumeAgentState) -> ResumeAgentState:
+            item_data = state["item_data"]
+            item_type = state.get("item_type", "experience")
+            ranking_reason = state.get("ranking_reason", "")
+            
+            # Create context-aware prompt based on item type
+            if item_type == "project":
+                context_prompt = self._create_project_bullet_prompt()
+            else:
+                context_prompt = self._create_experience_bullet_prompt()
+            
+            # Add ranking reason context if provided
+            ranking_context = ""
+            if ranking_reason:
+                ranking_context = f"\n\nRanking Context: This {item_type} was selected because: {ranking_reason}\nUse this context to emphasize the most relevant aspects in your bullet points."
+            
+            prompt_input = {
+                "item_data": item_data,
+                "item_type": item_type,
+                "ranking_context": ranking_context
+            }
+            
+            chain = context_prompt | self.llm | StrOutputParser()
+            bullet_points_text = chain.invoke(prompt_input)
+            bullet_points_list = self._parse_bullet_points(bullet_points_text)
+            
+            # Ensure we have exactly 3 bullet points
+            if len(bullet_points_list) < 3:
+                # If we don't have enough, pad with generic ones
+                while len(bullet_points_list) < 3:
+                    if item_type == "project":
+                        bullet_points_list.append(f"Developed innovative solution by applying technical expertise, which demonstrated problem-solving capabilities")
+                    else:
+                        bullet_points_list.append(f"Contributed to team success by applying technical skills, which enhanced project outcomes")
+            
+            return {"bullet_points": bullet_points_list[:3]}
+        
+        return generate_bullet_points
+    
+    def _create_experience_bullet_prompt(self):
+        """Create prompt template for experience bullet points."""
+        return self._create_prompt_template(
+            system_message="""You are an expert resume writer. Generate exactly 3 bullet points in the Google XYZ format for the given work experience.
 
 The XYZ format is: Accomplished [X] by implementing [Y], which led to [Z].
 
@@ -107,38 +180,50 @@ Rules:
 5. Make each bullet point impactful and measurable
 6. Do not include any introductory text or explanations
 7. Do not use bullet point symbols (*, -, •) - just write the text
-8. The bullet points should focus on technical details (using specific technologies, algorithms, etc.)
+8. Focus on technical details (using specific technologies, algorithms, etc.)
+9. Emphasize professional impact and business value
 
 Example format:
 Led a team of 5 developers by implementing microservices architecture, which resulted in 40% improved system performance
 Managed full software development lifecycle by establishing CI/CD pipelines, which led to 50% faster deployment cycles
 Optimized database queries by implementing caching strategies, which achieved 60% reduction in response time""",
-            human_message="Generate 3 bullet points for this experience: {experience}"
+            human_message="Generate 3 bullet points for this {item_type}: {item_data}{ranking_context}"
         )
-        
-        chain = prompt | self.llm | StrOutputParser()
-        
-        def generate_bullet_points(state: ResumeAgentState) -> ResumeAgentState:
-            experience = state["experience"]
-            bullet_points_text = chain.invoke({"experience": experience})
-            bullet_points_list = self._parse_bullet_points(bullet_points_text)
-            
-            # Ensure we have exactly 3 bullet points
-            if len(bullet_points_list) < 3:
-                # If we don't have enough, pad with generic ones
-                while len(bullet_points_list) < 3:
-                    bullet_points_list.append(f"Contributed to team success by applying technical skills, which enhanced project outcomes")
-            
-            return {"bullet_points": bullet_points_list[:3]}
-        
-        return generate_bullet_points
     
-    def generate_bullet_points(self, experience_id: int) -> Dict[str, Any]:
+    def _create_project_bullet_prompt(self):
+        """Create prompt template for project bullet points."""
+        return self._create_prompt_template(
+            system_message="""You are an expert resume writer. Generate exactly 3 bullet points in the Google XYZ format for the given project.
+
+The XYZ format is: Accomplished [X] by implementing [Y], which led to [Z].
+
+Rules:
+1. Generate EXACTLY 3 bullet points
+2. Each bullet point should be on a separate line
+3. Start each bullet point with an action verb
+4. Include specific metrics and achievements when possible
+5. Make each bullet point impactful and measurable
+6. Do not include any introductory text or explanations
+7. Do not use bullet point symbols (*, -, •) - just write the text
+8. Focus on technical implementation details and innovation
+9. Emphasize problem-solving skills and technical expertise
+10. Highlight learning outcomes and technical growth
+
+Example format:
+Developed machine learning model by implementing neural networks in TensorFlow, which achieved 95% accuracy in classification tasks
+Built full-stack web application by integrating React frontend with Node.js backend, which demonstrated end-to-end development skills
+Designed scalable database architecture by implementing MongoDB with Redis caching, which supported 10,000+ concurrent users""",
+            human_message="Generate 3 bullet points for this {item_type}: {item_data}{ranking_context}"
+        )
+    
+    def generate_bullet_points_for_experience(self, experience_id: int, ranking_reason: Optional[str] = None) -> Dict[str, Any]:
         """Main method to generate bullet points for an experience."""
         initial_state = {
             "messages": [],
-            "experience_id": experience_id,
-            "experience": "",
+            "item_id": experience_id,
+            "item_type": "experience",
+            "item_data": "",
+            "ranking_reason": ranking_reason,
             "bullet_points": [],
             "error": ""
         }
@@ -146,12 +231,59 @@ Optimized database queries by implementing caching strategies, which achieved 60
         result = self.run(initial_state)
         return result
     
+    def generate_bullet_points_for_project(self, project_id: int, ranking_reason: Optional[str] = None) -> Dict[str, Any]:
+        """Main method to generate bullet points for a project."""
+        initial_state = {
+            "messages": [],
+            "item_id": project_id,
+            "item_type": "project",
+            "item_data": "",
+            "ranking_reason": ranking_reason,
+            "bullet_points": [],
+            "error": ""
+        }
+        
+        result = self.run(initial_state)
+        return result
+    
+    def generate_bullet_points(self, item_id: int, item_type: str = "experience", ranking_reason: Optional[str] = None) -> Dict[str, Any]:
+        """Generic method to generate bullet points for either experience or project."""
+        if item_type == "project":
+            return self.generate_bullet_points_for_project(item_id, ranking_reason)
+        else:
+            return self.generate_bullet_points_for_experience(item_id, ranking_reason)
+    
+    def generate_multiple_items(self, items: List[Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
+        """Generate bullet points for multiple experiences/projects.
+        
+        Args:
+            items: List of dicts with keys: 'id', 'type', 'ranking_reason' (optional)
+        """
+        results = {}
+        for item in items:
+            item_id = item.get('id')
+            item_type = item.get('type', 'experience')
+            ranking_reason = item.get('ranking_reason')
+            
+            try:
+                key = f"{item_type}_{item_id}"
+                results[key] = self.generate_bullet_points(item_id, item_type, ranking_reason)
+            except Exception as e:
+                results[key] = {"error": f"Failed to process {item_type} {item_id}: {str(e)}"}
+        
+        return results
+    
+    # Backward compatibility methods
+    def generate_bullet_points_legacy(self, experience_id: int) -> Dict[str, Any]:
+        """Legacy method for backward compatibility."""
+        return self.generate_bullet_points_for_experience(experience_id)
+    
     def generate_multiple_experiences(self, experience_ids: List[int]) -> Dict[int, Dict[str, Any]]:
-        """Generate bullet points for multiple experiences."""
+        """Legacy method for backward compatibility."""
         results = {}
         for exp_id in experience_ids:
             try:
-                results[exp_id] = self.generate_bullet_points(exp_id)
+                results[exp_id] = self.generate_bullet_points_for_experience(exp_id)
             except Exception as e:
                 results[exp_id] = {"error": f"Failed to process experience {exp_id}: {str(e)}"}
         return results 
