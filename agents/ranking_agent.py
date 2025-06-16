@@ -5,13 +5,12 @@ from langchain_core.messages import HumanMessage, AIMessage
 
 from agents.base_agents import BaseAgentState
 from agents.database_agent import DatabaseAgent
-from agents.job_analysis_agent import JobAnalysisAgent
+from job_scraper import JobInfo
 
 class RankingAgentState(BaseAgentState):
     """State for the Ranking Agent."""
     messages: Annotated[Sequence[HumanMessage | AIMessage], operator.add]
-    job_posting_url: str
-    job_info: Dict[str, Any]
+    job_info: JobInfo
     job_technical_skills: List[str]
     user_id: int
     experience_list: List[Any]  # List of ExperienceDB objects
@@ -22,13 +21,11 @@ class RankingAgentState(BaseAgentState):
     ranked_projects: List[Tuple[int, str]]
     ranking_type: str  # "experiences", "projects", or "both"
 
-class RankingAgent(DatabaseAgent, JobAnalysisAgent):
+class RankingAgent(DatabaseAgent):
     """Agent for ranking user experiences and projects based on job posting relevance."""
     
     def __init__(self, model_name: str = "gemini-2.0-flash-lite", temperature: float = 0.4):
-        # Initialize both parent classes
-        DatabaseAgent.__init__(self, model_name, temperature)
-        JobAnalysisAgent.__init__(self, model_name, temperature)
+        super().__init__(model_name, temperature)
     
     def get_state_class(self) -> type:
         """Return the state class for this agent."""
@@ -37,7 +34,6 @@ class RankingAgent(DatabaseAgent, JobAnalysisAgent):
     def create_nodes(self) -> Dict[str, Callable]:
         """Create all nodes for the ranking agent."""
         return {
-            "extract_job": self._create_job_extraction_node(),
             "extract_skills": self._create_technical_skills_extraction_node(),
             "query_data": self._create_data_query_node(),
             "analyze_skills": self._create_skills_analysis_node(),
@@ -47,7 +43,6 @@ class RankingAgent(DatabaseAgent, JobAnalysisAgent):
     def define_edges(self) -> List[tuple]:
         """Define the edges between nodes."""
         return [
-            ("extract_job", "extract_skills"),
             ("extract_skills", "query_data"),
             ("query_data", "analyze_skills"),
             ("analyze_skills", "rank_items")
@@ -55,7 +50,7 @@ class RankingAgent(DatabaseAgent, JobAnalysisAgent):
     
     def get_entry_point(self) -> str:
         """Return the entry point node name."""
-        return "extract_job"
+        return "extract_skills"
     
     def query_all_user_experiences(self, user_id: int) -> List[Any]:
         """Query all experiences for a specific user from the database."""
@@ -79,17 +74,6 @@ class RankingAgent(DatabaseAgent, JobAnalysisAgent):
             print(f"Error querying user projects: {e}")
             return []
     
-    def _create_job_extraction_node(self):
-        """Create node to extract job information from URL."""
-        def job_extraction(state: RankingAgentState) -> RankingAgentState:
-            try:
-                job_url = state["job_posting_url"]
-                job_info = self._extract_job_information(job_url)
-                return {"job_info": job_info}
-            except Exception as e:
-                return {"error": f"Failed to extract job information: {str(e)}"}
-        return job_extraction
-    
     def _create_technical_skills_extraction_node(self):
         """Create node to extract technical skills from job posting."""
         def extract_technical_skills(state: RankingAgentState) -> RankingAgentState:
@@ -105,6 +89,82 @@ class RankingAgent(DatabaseAgent, JobAnalysisAgent):
                 return {"job_technical_skills": []}
         
         return extract_technical_skills
+    
+    def _extract_technical_skills(self, job_info: JobInfo) -> List[str]:
+        """Extract technical skills from job information using LLM."""
+        # Create prompt for technical skills extraction
+        prompt = self._create_prompt_template(
+            system_message="""You are a technical recruiter expert at identifying technical skills from job postings.
+
+Your task is to extract ONLY the technical skills, tools, technologies, and programming languages mentioned in the job posting.
+
+Focus on:
+- Programming languages (Python, JavaScript, Java, etc.)
+- Frameworks and libraries (React, Django, TensorFlow, etc.)
+- Databases (PostgreSQL, MongoDB, Redis, etc.)
+- Cloud platforms (AWS, Azure, GCP, etc.)
+- Development tools (Docker, Kubernetes, Git, etc.)
+- Technical methodologies (Agile, DevOps, CI/CD, etc.)
+
+Do NOT include:
+- Soft skills (communication, leadership, etc.)
+- General business skills
+- Industry knowledge
+- Educational requirements
+
+Return ONLY a JSON array of technical skills as strings:
+["skill1", "skill2", "skill3"]
+
+If no technical skills are found, return an empty array: []""",
+            human_message="""Extract technical skills from this job posting:
+
+Company: {company_name}
+Position: {job_title}
+Description: {description}
+Qualifications: {qualifications}"""
+        )
+        
+        # Format job information for the prompt
+        qualifications_text = "\n".join(job_info.qualifications)
+        
+        formatted_prompt = prompt.format(
+            company_name=job_info.company_name,
+            job_title=job_info.job_title,
+            description=job_info.description,
+            qualifications=qualifications_text
+        )
+        
+        try:
+            response_text = self._safe_llm_invoke(formatted_prompt, "[]")
+            response_text = self._clean_json_response(response_text)
+            skills_list = json.loads(response_text)
+            
+            if isinstance(skills_list, list):
+                return [skill.strip() for skill in skills_list if isinstance(skill, str) and skill.strip()]
+            else:
+                print("LLM response is not a list, falling back to empty list")
+                return []
+                
+        except Exception as e:
+            print(f"Error extracting technical skills with LLM: {e}")
+            
+            # Fallback: Simple keyword extraction
+            fallback_skills = []
+            text_to_search = f"{job_info.description} {qualifications_text}".lower()
+            
+            # Common technical keywords to look for
+            tech_keywords = [
+                "python", "javascript", "java", "react", "node.js", "sql", "postgresql", 
+                "mongodb", "aws", "docker", "kubernetes", "git", "linux", "html", "css",
+                "typescript", "angular", "vue", "django", "flask", "spring", "tensorflow",
+                "pytorch", "machine learning", "ai", "data science", "devops", "ci/cd"
+            ]
+            
+            for keyword in tech_keywords:
+                if keyword in text_to_search:
+                    fallback_skills.append(keyword.title())
+            
+            return fallback_skills
     
     def _create_data_query_node(self):
         """Create node to query user experiences and/or projects based on ranking type."""
@@ -411,7 +471,7 @@ Description: {proj.long_description} {proj.short_description}
         
         return ranking
     
-    def _rank_experiences(self, job_info: Dict[str, Any], experiences: List[Any], skills_analysis: Dict[str, Any]) -> List[Tuple[int, str]]:
+    def _rank_experiences(self, job_info: JobInfo, experiences: List[Any], skills_analysis: Dict[str, Any]) -> List[Tuple[int, str]]:
         """Rank experiences based on holistic job relevance assessment."""
         if not experiences:
             return []
@@ -492,12 +552,12 @@ Focus on the person's journey, achievements, and potential rather than just tech
         
         # Format the prompt with job and experience data
         formatted_prompt = prompt.format(
-            company_name=job_info.get("company_name", "Unknown Company"),
-            job_title=job_info.get("job_title", "Unknown Position"),
-            location=job_info.get("location", "Unknown Location"),
-            job_type=job_info.get("job_type", "Unknown Type"),
-            description=job_info.get("description", "No description available"),
-            qualifications=", ".join(job_info.get("qualifications", [])),
+            company_name=job_info.company_name,
+            job_title=job_info.job_title,
+            location=job_info.location,
+            job_type=job_info.job_type,
+            description=job_info.description,
+            qualifications=", ".join(job_info.qualifications),
             technical_skills=", ".join(job_skills) if job_skills else "Various technical skills",
             experiences="\n\n".join(experience_descriptions)
         )
@@ -543,7 +603,7 @@ Focus on the person's journey, achievements, and potential rather than just tech
             
             return fallback_ranking
     
-    def _rank_projects(self, job_info: Dict[str, Any], projects: List[Any], skills_analysis: Dict[str, Any]) -> List[Tuple[int, str]]:
+    def _rank_projects(self, job_info: JobInfo, projects: List[Any], skills_analysis: Dict[str, Any]) -> List[Tuple[int, str]]:
         """Rank projects based on holistic job relevance assessment."""
         if not projects:
             return []
@@ -624,12 +684,12 @@ Focus on technical execution, problem-solving approach, and relevance to the tar
         
         # Format the prompt with job and project data
         formatted_prompt = prompt.format(
-            company_name=job_info.get("company_name", "Unknown Company"),
-            job_title=job_info.get("job_title", "Unknown Position"),
-            location=job_info.get("location", "Unknown Location"),
-            job_type=job_info.get("job_type", "Unknown Type"),
-            description=job_info.get("description", "No description available"),
-            qualifications=", ".join(job_info.get("qualifications", [])),
+            company_name=job_info.company_name,
+            job_title=job_info.job_title,
+            location=job_info.location,
+            job_type=job_info.job_type,
+            description=job_info.description,
+            qualifications=", ".join(job_info.qualifications),
             technical_skills=", ".join(job_skills) if job_skills else "Various technical skills",
             projects="\n\n".join(project_descriptions)
         )
@@ -675,12 +735,11 @@ Focus on technical execution, problem-solving approach, and relevance to the tar
             
             return fallback_ranking
     
-    def rank_experiences(self, job_posting_url: str, user_id: int) -> Dict[str, Any]:
+    def rank_experiences(self, job_info: JobInfo, user_id: int) -> Dict[str, Any]:
         """Main method to rank user experiences based on a job posting."""
         initial_state = {
             "messages": [],
-            "job_posting_url": job_posting_url,
-            "job_info": {},
+            "job_info": job_info,
             "job_technical_skills": [],
             "user_id": user_id,
             "experience_list": [],
@@ -696,12 +755,11 @@ Focus on technical execution, problem-solving approach, and relevance to the tar
         result = self.run(initial_state)
         return result
     
-    def rank_projects(self, job_posting_url: str, user_id: int) -> Dict[str, Any]:
+    def rank_projects(self, job_info: JobInfo, user_id: int) -> Dict[str, Any]:
         """Main method to rank user projects based on a job posting."""
         initial_state = {
             "messages": [],
-            "job_posting_url": job_posting_url,
-            "job_info": {},
+            "job_info": job_info,
             "job_technical_skills": [],
             "user_id": user_id,
             "experience_list": [],
@@ -717,12 +775,11 @@ Focus on technical execution, problem-solving approach, and relevance to the tar
         result = self.run(initial_state)
         return result
     
-    def rank_both(self, job_posting_url: str, user_id: int) -> Dict[str, Any]:
+    def rank_both(self, job_info: JobInfo, user_id: int) -> Dict[str, Any]:
         """Main method to rank both user experiences and projects based on a job posting."""
         initial_state = {
             "messages": [],
-            "job_posting_url": job_posting_url,
-            "job_info": {},
+            "job_info": job_info,
             "job_technical_skills": [],
             "user_id": user_id,
             "experience_list": [],
@@ -748,8 +805,8 @@ Focus on technical execution, problem-solving approach, and relevance to the tar
         proj_skills_analysis = result.get("project_skills_analysis", {})
         
         summary = {
-            "job_title": job_info.get("job_title", "Unknown"),
-            "company": job_info.get("company_name", "Unknown"),
+            "job_title": job_info.job_title,
+            "company": job_info.company_name,
             "technical_skills_required": result.get("job_technical_skills", []),
             "experiences_analyzed": len(result.get("experience_list", [])),
             "projects_analyzed": len(result.get("project_list", [])),
@@ -781,4 +838,74 @@ Focus on technical execution, problem-solving approach, and relevance to the tar
                 for proj in proj_skills_analysis["project_analyses"]
             ]
         
-        return summary 
+        return summary
+    
+    # Backward compatibility methods for URL-based inputs
+    def rank_experiences_from_url(self, job_posting_url: str, user_id: int) -> Dict[str, Any]:
+        """Backward compatibility method to rank experiences from job posting URL."""
+        try:
+            # Import here to avoid circular imports
+            from agents.job_analysis_agent import JobAnalysisAgent
+            
+            # Use JobAnalysisAgent to convert URL to JobInfo
+            job_analysis_agent = JobAnalysisAgent(self.model_name, self.temperature)
+            analysis_result = job_analysis_agent.analyze_job(job_posting_url)
+            
+            if analysis_result.get("error"):
+                return {"error": f"Job analysis failed: {analysis_result['error']}"}
+            
+            job_info = analysis_result.get("job_info")
+            if not job_info:
+                return {"error": "Failed to extract job information"}
+            
+            # Use the new method with JobInfo
+            return self.rank_experiences(job_info, user_id)
+            
+        except Exception as e:
+            return {"error": f"Failed to process job URL: {str(e)}"}
+    
+    def rank_projects_from_url(self, job_posting_url: str, user_id: int) -> Dict[str, Any]:
+        """Backward compatibility method to rank projects from job posting URL."""
+        try:
+            # Import here to avoid circular imports
+            from agents.job_analysis_agent import JobAnalysisAgent
+            
+            # Use JobAnalysisAgent to convert URL to JobInfo
+            job_analysis_agent = JobAnalysisAgent(self.model_name, self.temperature)
+            analysis_result = job_analysis_agent.analyze_job(job_posting_url)
+            
+            if analysis_result.get("error"):
+                return {"error": f"Job analysis failed: {analysis_result['error']}"}
+            
+            job_info = analysis_result.get("job_info")
+            if not job_info:
+                return {"error": "Failed to extract job information"}
+            
+            # Use the new method with JobInfo
+            return self.rank_projects(job_info, user_id)
+            
+        except Exception as e:
+            return {"error": f"Failed to process job URL: {str(e)}"}
+    
+    def rank_both_from_url(self, job_posting_url: str, user_id: int) -> Dict[str, Any]:
+        """Backward compatibility method to rank both experiences and projects from job posting URL."""
+        try:
+            # Import here to avoid circular imports
+            from agents.job_analysis_agent import JobAnalysisAgent
+            
+            # Use JobAnalysisAgent to convert URL to JobInfo
+            job_analysis_agent = JobAnalysisAgent(self.model_name, self.temperature)
+            analysis_result = job_analysis_agent.analyze_job(job_posting_url)
+            
+            if analysis_result.get("error"):
+                return {"error": f"Job analysis failed: {analysis_result['error']}"}
+            
+            job_info = analysis_result.get("job_info")
+            if not job_info:
+                return {"error": "Failed to extract job information"}
+            
+            # Use the new method with JobInfo
+            return self.rank_both(job_info, user_id)
+            
+        except Exception as e:
+            return {"error": f"Failed to process job URL: {str(e)}"} 

@@ -10,8 +10,10 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from dotenv import load_dotenv
-from agents import ResumeAgent, RankingAgent, AgentFactory
+from agents import ResumeAgent, RankingAgent, AgentFactory, JobAnalysisAgent
 from job_scraper import JobInfo
+
+TESTING_JOB_URL = "https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite/job/US-CA-Santa-Clara/Developer-Technology-Engineer--Public-Sector---New-College-Grad-2025_JR1987718?source=jobboardlinkedin"
 
 def test_resume_agent():
     """Test the ResumeAgent with a simple example."""
@@ -140,9 +142,9 @@ def test_ranking_agent_experiences():
         agent = RankingAgent(temperature=0.4)
         
         # Test with a sample job URL
-        job_url = "https://nvidia.wd5.myworkdayjobs.com/en-US/NVIDIAExternalCareerSite/job/US-CA-Santa-Clara/Software-Research-Intern--AI-Networking-Team---Fall-2025_JR1998253"
+        job_url = TESTING_JOB_URL
         
-        result = agent.rank_experiences(job_url, user_id=1)
+        result = agent.rank_experiences_from_url(job_url, user_id=1)
         
         if result.get("error"):
             print(f"❌ Error: {result['error']}")
@@ -179,9 +181,9 @@ def test_ranking_agent_projects():
         agent = RankingAgent(temperature=0.4)
         
         # Test with a sample job URL
-        job_url = "https://nvidia.wd5.myworkdayjobs.com/en-US/NVIDIAExternalCareerSite/job/US-CA-Santa-Clara/Software-Research-Intern--AI-Networking-Team---Fall-2025_JR1998253"
+        job_url = TESTING_JOB_URL
         
-        result = agent.rank_projects(job_url, user_id=1)
+        result = agent.rank_projects_from_url(job_url, user_id=1)
         
         if result.get("error"):
             print(f"❌ Error: {result['error']}")
@@ -224,9 +226,9 @@ def test_ranking_agent_both():
         agent = RankingAgent(temperature=0.4)
         
         # Test with a sample job URL
-        job_url = "https://nvidia.wd5.myworkdayjobs.com/en-US/NVIDIAExternalCareerSite/job/US-CA-Santa-Clara/Software-Research-Intern--AI-Networking-Team---Fall-2025_JR1998253"
+        job_url = TESTING_JOB_URL
         
-        result = agent.rank_both(job_url, user_id=1)
+        result = agent.rank_both_from_url(job_url, user_id=1)
         
         if result.get("error"):
             print(f"❌ Error: {result['error']}")
@@ -266,6 +268,56 @@ def test_ranking_agent_both():
         print(f"❌ Exception: {e}")
         return False
 
+def test_job_analysis_agent():
+    """Test the JobAnalysisAgent standalone functionality."""
+    print("\n🔍 Testing JobAnalysisAgent - Standalone Job Analysis")
+    print("-" * 55)
+    
+    try:
+        # Create agent using factory
+        agent = AgentFactory.create_agent("job_analysis", temperature=0.7)
+        
+        # Test with a sample job URL
+        job_url = TESTING_JOB_URL
+        
+        result = agent.analyze_job(job_url)
+        
+        if result.get("error"):
+            print(f"❌ Error: {result['error']}")
+            return False
+        
+        summary = agent.get_job_analysis_summary(result)
+        
+        if summary.get("error"):
+            print(f"❌ Summary Error: {summary['error']}")
+            return False
+        
+        print(f"✅ Successfully analyzed job posting!")
+        print(f"   Company: {summary['company_name']}")
+        print(f"   Position: {summary['job_title']}")
+        print(f"   Location: {summary['location']}")
+        print(f"   Job Type: {summary['job_type']}")
+        print(f"   Technical Skills Found: {len(summary['technical_skills_extracted'])}")
+        print(f"   Total Qualifications: {summary['total_qualifications']}")
+        
+        # Verify JobInfo object is returned
+        job_info = summary['job_info_object']
+        if job_info and hasattr(job_info, 'company_name'):
+            print(f"✅ JobInfo object properly created and accessible")
+        else:
+            print(f"❌ JobInfo object creation failed")
+            return False
+        
+        # Show some technical skills
+        if summary['technical_skills_extracted']:
+            print(f"   Sample skills: {', '.join(summary['technical_skills_extracted'][:5])}")
+        
+        return True
+        
+    except Exception as e:
+        print(f"❌ Exception: {e}")
+        return False
+
 def test_factory():
     """Test the AgentFactory."""
     print("\n🏭 Testing AgentFactory")
@@ -279,16 +331,20 @@ def test_factory():
         # Test creating agents using new factory method
         resume_agent = AgentFactory.create_agent("resume")
         ranking_agent = AgentFactory.create_agent("ranking")
+        job_analysis_agent = AgentFactory.create_agent("job_analysis")
         
         print(f"✅ Created ResumeAgent with temperature: {resume_agent.temperature}")
         print(f"✅ Created RankingAgent with temperature: {ranking_agent.temperature}")
+        print(f"✅ Created JobAnalysisAgent with temperature: {job_analysis_agent.temperature}")
         
         # Test custom parameters
         custom_resume = AgentFactory.create_agent("resume", temperature=1.5)
         custom_ranking = AgentFactory.create_agent("ranking", temperature=0.2)
+        custom_job_analysis = AgentFactory.create_agent("job_analysis", temperature=0.5)
         
         print(f"✅ Created custom ResumeAgent with temperature: {custom_resume.temperature}")
         print(f"✅ Created custom RankingAgent with temperature: {custom_ranking.temperature}")
+        print(f"✅ Created custom JobAnalysisAgent with temperature: {custom_job_analysis.temperature}")
         
         return True
         
@@ -446,50 +502,151 @@ def test_resume_agent_with_job_info():
         print(f"❌ Exception: {e}")
         return False
 
+def test_decoupled_job_analysis_and_ranking():
+    """Test the decoupled workflow: JobAnalysisAgent → RankingAgent."""
+    print("\n🔗 Testing Decoupled Job Analysis + Ranking Workflow")
+    print("-" * 60)
+    
+    try:
+        # Step 1: Use JobAnalysisAgent to parse job URL into JobInfo
+        print("Step 1: Analyzing job posting...")
+        job_analysis_agent = AgentFactory.create_agent("job_analysis", temperature=0.7)
+        
+        job_url = TESTING_JOB_URL
+        
+        job_analysis_result = job_analysis_agent.analyze_job(job_url)
+        
+        if job_analysis_result.get("error"):
+            print(f"❌ Job analysis error: {job_analysis_result['error']}")
+            return False
+        
+        job_analysis_summary = job_analysis_agent.get_job_analysis_summary(job_analysis_result)
+        job_info = job_analysis_summary["job_info_object"]
+        
+        print(f"✅ Job analysis complete!")
+        print(f"   Company: {job_analysis_summary['company_name']}")
+        print(f"   Position: {job_analysis_summary['job_title']}")
+        print(f"   Technical skills found: {len(job_analysis_summary['technical_skills_extracted'])}")
+        
+        # Step 2: Use RankingAgent with the JobInfo object
+        print("\nStep 2: Ranking experiences with job context...")
+        ranking_agent = AgentFactory.create_agent("ranking", temperature=0.4)
+        
+        ranking_result = ranking_agent.rank_experiences(job_info, user_id=1)
+        
+        if ranking_result.get("error"):
+            print(f"❌ Ranking error: {ranking_result['error']}")
+            return False
+        
+        ranking_summary = ranking_agent.get_ranking_summary(ranking_result)
+        
+        print(f"✅ Experience ranking complete!")
+        print(f"   Experiences analyzed: {ranking_summary['experiences_analyzed']}")
+        print(f"   Rankings generated: {len(ranking_summary['experience_rankings'])}")
+        
+        # Show sample ranking
+        if ranking_summary['experience_rankings']:
+            first_ranking = ranking_summary['experience_rankings'][0]
+            if isinstance(first_ranking, tuple) and len(first_ranking) >= 2:
+                exp_id, reason = first_ranking
+                print(f"   Top match: Experience {exp_id}")
+                print(f"   Reason: {reason[:100]}...")
+        
+        # Step 3: Demonstrate the decoupling benefit - reuse JobInfo
+        print("\nStep 3: Reusing JobInfo for project ranking...")
+        project_ranking_result = ranking_agent.rank_projects(job_info, user_id=1)
+        
+        if project_ranking_result.get("error"):
+            print(f"❌ Project ranking error: {project_ranking_result['error']}")
+            return False
+        
+        project_summary = ranking_agent.get_ranking_summary(project_ranking_result)
+        print(f"✅ Project ranking complete using same JobInfo!")
+        print(f"   Projects analyzed: {project_summary['projects_analyzed']}")
+        print(f"   Rankings generated: {len(project_summary['project_rankings'])}")
+        
+        print("\n🎉 Decoupled workflow successful! JobAnalysisAgent → RankingAgent")
+        print("   Benefits: Job analysis can be cached and reused across multiple ranking operations")
+        
+        return True
+        
+    except Exception as e:
+        print(f"❌ Exception: {e}")
+        return False
+
 def main():
     """Run all tests."""
     load_dotenv()
     
-    print("🧪 Agent Abstraction Tests - Enhanced with Project Support")
-    print("=" * 70)
+    print("🧪 Agent Abstraction Tests - Decoupled Architecture with Project Support")
+    print("=" * 75)
     
     results = []
     
-    # Run tests
-    # results.append(("Factory", test_factory()))
-    # results.append(("Agent Structure", test_agent_structure()))
-    # results.append(("RankingAgent Methods", test_ranking_agent_methods()))
-    # results.append(("ResumeAgent", test_resume_agent()))
-    # results.append(("RankingAgent - Experiences", test_ranking_agent_experiences()))
-    # results.append(("RankingAgent - Projects", test_ranking_agent_projects()))
-    # results.append(("RankingAgent - Both", test_ranking_agent_both()))
+    # Core Infrastructure Tests
+    print("\n📋 Core Infrastructure Tests")
+    print("-" * 40)
+    results.append(("Factory", test_factory()))
+    results.append(("Agent Structure", test_agent_structure()))
+    results.append(("RankingAgent Methods", test_ranking_agent_methods()))
+    
+    # Individual Agent Tests
+    print("\n🤖 Individual Agent Tests")
+    print("-" * 40)
+    results.append(("JobAnalysisAgent", test_job_analysis_agent()))
+    results.append(("ResumeAgent - Basic", test_resume_agent()))
     results.append(("ResumeAgent - Project", test_resume_agent_project()))
     results.append(("ResumeAgent - With Ranking", test_resume_agent_with_ranking()))
-    results.append(("ResumeAgent - Generic", test_resume_agent_generic()))
+    results.append(("ResumeAgent - Generic Method", test_resume_agent_generic()))
     results.append(("ResumeAgent - With JobInfo", test_resume_agent_with_job_info()))
     
+    # Ranking Agent Tests (Backward Compatibility)
+    print("\n🏆 Ranking Agent Tests (Backward Compatibility)")
+    print("-" * 55)
+    results.append(("RankingAgent - Experiences", test_ranking_agent_experiences()))
+    results.append(("RankingAgent - Projects", test_ranking_agent_projects()))
+    results.append(("RankingAgent - Both", test_ranking_agent_both()))
+    
+    # Integration & Workflow Tests
+    print("\n🔗 Integration & Workflow Tests")
+    print("-" * 40)
+    results.append(("Decoupled Job Analysis → Ranking", test_decoupled_job_analysis_and_ranking()))
+    
     # Summary
-    print("\n📊 Test Results")
-    print("=" * 70)
+    print("\n📊 Test Results Summary")
+    print("=" * 75)
     
     passed = 0
+    failed_tests = []
+    
     for test_name, success in results:
         status = "✅ PASS" if success else "❌ FAIL"
-        print(f"{test_name:25} {status}")
+        print(f"{test_name:35} {status}")
         if success:
             passed += 1
+        else:
+            failed_tests.append(test_name)
     
-    print(f"\nPassed: {passed}/{len(results)} tests")
+    print(f"\nOverall Results: {passed}/{len(results)} tests passed")
     
     if passed == len(results):
-        print("🎉 All tests passed! The enhanced agent abstraction with project support is working correctly.")
+        print("\n🎉 All tests passed! The decoupled agent architecture is working correctly.")
+        print("✨ Key features verified:")
+        print("   • Standalone JobAnalysisAgent for parsing job URLs → JobInfo")
+        print("   • Decoupled RankingAgent accepting JobInfo objects")
+        print("   • Enhanced ResumeAgent with JobInfo context")
+        print("   • Backward compatibility for URL-based ranking methods")
+        print("   • Full project support across all agents")
     else:
-        print("⚠️  Some tests failed. Check your configuration:")
+        print(f"\n⚠️  {len(failed_tests)} test(s) failed. Check your configuration:")
+        print("   Failed tests:", ", ".join(failed_tests))
+        print("\nTroubleshooting checklist:")
         print("1. Ensure GOOGLE_API_KEY is set in .env")
         print("2. Verify database is accessible")
         print("3. Check that experience and project data exists")
         print("4. Ensure all service imports are correct")
-        print("5. Verify ProjectService is properly implemented")
+        print("5. Verify web scraping functionality works")
+        print("6. Check JobInfo object creation and serialization")
 
 if __name__ == "__main__":
     main() 

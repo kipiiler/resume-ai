@@ -176,10 +176,12 @@ class AgentFactory:
         # Import here to avoid circular imports
         from agents.resume_agent import ResumeAgent
         from agents.ranking_agent import RankingAgent
+        from agents.job_analysis_agent import JobAnalysisAgent
         
         agent_classes = {
             "resume": ResumeAgent,
             "ranking": RankingAgent,
+            "job_analysis": JobAnalysisAgent,
         }
         
         if agent_type not in agent_classes:
@@ -192,4 +194,4 @@ class AgentFactory:
     @staticmethod
     def list_available_agents() -> List[str]:
         """List all available agent types."""
-        return ["resume", "ranking"]
+        return ["resume", "ranking", "job_analysis"]

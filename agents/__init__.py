@@ -8,11 +8,12 @@ Base Classes:
 - BaseAgent: Abstract base class for all agents
 - BaseAgentState: Base state structure
 - DatabaseAgent: Base class for database-enabled agents  
-- JobAnalysisAgent: Base class for job analysis agents
+- JobAnalysisAgent: Agent for analyzing job postings and extracting structured information
 
 Concrete Agents:
 - ResumeAgent: Generates resume bullet points from experience data
 - RankingAgent: Ranks user experiences based on job posting relevance
+- JobAnalysisAgent: Analyzes job postings and extracts JobInfo objects
 
 Factory:
 - AgentFactory: Factory class for creating agents
@@ -29,9 +30,9 @@ __all__ = [
     "BaseAgent",
     "BaseAgentState", 
     "DatabaseAgent",
-    "JobAnalysisAgent",
     
     # Concrete agents
+    "JobAnalysisAgent",
     "ResumeAgent",
     "RankingAgent",
     
