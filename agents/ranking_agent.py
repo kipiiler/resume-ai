@@ -1,5 +1,5 @@
 import json
-from typing import TypedDict, Annotated, Sequence, Dict, Any, Callable, List
+from typing import TypedDict, Annotated, Sequence, Dict, Any, Callable, List, Tuple
 import operator
 from langchain_core.messages import HumanMessage, AIMessage
 
@@ -18,8 +18,8 @@ class RankingAgentState(BaseAgentState):
     project_list: List[Any]  # List of ProjectDB objects
     experience_skills_analysis: Dict[str, Any]
     project_skills_analysis: Dict[str, Any]
-    ranked_experiences: List[str]
-    ranked_projects: List[str]
+    ranked_experiences: List[Tuple[int, str]]
+    ranked_projects: List[Tuple[int, str]]
     ranking_type: str  # "experiences", "projects", or "both"
 
 class RankingAgent(DatabaseAgent, JobAnalysisAgent):
@@ -411,7 +411,7 @@ Description: {proj.long_description} {proj.short_description}
         
         return ranking
     
-    def _rank_experiences(self, job_info: Dict[str, Any], experiences: List[Any], skills_analysis: Dict[str, Any]) -> List[str]:
+    def _rank_experiences(self, job_info: Dict[str, Any], experiences: List[Any], skills_analysis: Dict[str, Any]) -> List[Tuple[int, str]]:
         """Rank experiences based on holistic job relevance assessment."""
         if not experiences:
             return []
@@ -477,10 +477,14 @@ Instructions:
 - Think about potential and transferable capabilities, not just current exact matches
 - Rank from most suitable overall candidate to least suitable
 
-Return ONLY a JSON array of strings explaining your ranking decisions:
-["Experience X: Best fit because [holistic reasoning about fit, growth, impact, and potential]",
- "Experience Y: Strong candidate due to [comprehensive assessment of relevant factors]",
- "Experience Z: Solid option with [balanced view of strengths and development areas]"]
+Return ONLY a JSON array of arrays, where each inner array contains [experience_id, reasoning]:
+[[1, "Best fit because [holistic reasoning about fit, growth, impact, and potential]"],
+ [3, "Strong candidate due to [comprehensive assessment of relevant factors]"],
+ [2, "Solid option with [balanced view of strengths and development areas]"]]
+
+Each inner array should contain:
+- First element: The experience number (1, 2, 3, etc. based on the order provided)
+- Second element: Detailed reasoning for the ranking
 
 Focus on the person's journey, achievements, and potential rather than just technical checklist matching.""",
             human_message="Evaluate and rank these experiences for overall fit:\n\n{experiences}"
@@ -506,7 +510,18 @@ Focus on the person's journey, achievements, and potential rather than just tech
             if not isinstance(ranked_list, list):
                 raise ValueError("Response is not a list")
             
-            return ranked_list
+            # Convert to list of tuples (id, reason)
+            structured_rankings = []
+            for item in ranked_list:
+                if isinstance(item, list) and len(item) >= 2:
+                    exp_id = item[0]
+                    reason = item[1]
+                    structured_rankings.append((exp_id, reason))
+                else:
+                    # Fallback for malformed responses
+                    structured_rankings.append((len(structured_rankings) + 1, str(item)))
+            
+            return structured_rankings
             
         except Exception as e:
             print(f"Error in holistic experience ranking: {e}")
@@ -523,13 +538,12 @@ Focus on the person's journey, achievements, and potential rather than just tech
                     else:
                         skill_info = " with transferable technical foundation"
                 
-                fallback_ranking.append(
-                    f"Experience {i+1}: {exp.company_name} - {exp.short_description[:100]}...{skill_info}"
-                )
+                reason = f"{exp.company_name} - {exp.short_description[:100]}...{skill_info}"
+                fallback_ranking.append((i + 1, reason))
             
             return fallback_ranking
     
-    def _rank_projects(self, job_info: Dict[str, Any], projects: List[Any], skills_analysis: Dict[str, Any]) -> List[str]:
+    def _rank_projects(self, job_info: Dict[str, Any], projects: List[Any], skills_analysis: Dict[str, Any]) -> List[Tuple[int, str]]:
         """Rank projects based on holistic job relevance assessment."""
         if not projects:
             return []
@@ -595,10 +609,14 @@ Instructions:
 - Think about technical capabilities and problem-solving approach demonstrated
 - Rank from most relevant and impressive project to least relevant
 
-Return ONLY a JSON array of strings explaining your ranking decisions:
-["Project X: Best fit because [holistic reasoning about technical relevance, complexity, and innovation]",
- "Project Y: Strong relevance due to [comprehensive assessment of technical factors]",
- "Project Z: Good option with [balanced view of technical strengths and applicability]"]
+Return ONLY a JSON array of arrays, where each inner array contains [project_id, reasoning]:
+[[1, "Best fit because [holistic reasoning about technical relevance, complexity, and innovation]"],
+ [3, "Strong relevance due to [comprehensive assessment of technical factors]"],
+ [2, "Good option with [balanced view of technical strengths and applicability]"]]
+
+Each inner array should contain:
+- First element: The project number (1, 2, 3, etc. based on the order provided)
+- Second element: Detailed reasoning for the ranking
 
 Focus on technical execution, problem-solving approach, and relevance to the target role.""",
             human_message="Evaluate and rank these projects for overall relevance:\n\n{projects}"
@@ -624,7 +642,18 @@ Focus on technical execution, problem-solving approach, and relevance to the tar
             if not isinstance(ranked_list, list):
                 raise ValueError("Response is not a list")
             
-            return ranked_list
+            # Convert to list of tuples (id, reason)
+            structured_rankings = []
+            for item in ranked_list:
+                if isinstance(item, list) and len(item) >= 2:
+                    proj_id = item[0]
+                    reason = item[1]
+                    structured_rankings.append((proj_id, reason))
+                else:
+                    # Fallback for malformed responses
+                    structured_rankings.append((len(structured_rankings) + 1, str(item)))
+            
+            return structured_rankings
             
         except Exception as e:
             print(f"Error in holistic project ranking: {e}")
@@ -641,9 +670,8 @@ Focus on technical execution, problem-solving approach, and relevance to the tar
                     else:
                         skill_info = " with transferable technical foundation"
                 
-                fallback_ranking.append(
-                    f"Project {i+1}: {proj.project_name} - {proj.short_description[:100]}...{skill_info}"
-                )
+                reason = f"{proj.project_name} - {proj.short_description[:100]}...{skill_info}"
+                fallback_ranking.append((i + 1, reason))
             
             return fallback_ranking
     

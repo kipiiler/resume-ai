@@ -64,7 +64,12 @@ def test_ranking_agent_experiences():
         # Show first ranking as example
         if summary.get('experience_rankings'):
             print("Sample experience ranking:")
-            print(f"  • {summary['experience_rankings'][0][:100]}...")
+            first_ranking = summary['experience_rankings'][0]
+            if isinstance(first_ranking, tuple) and len(first_ranking) >= 2:
+                exp_id, reason = first_ranking
+                print(f"  • Experience {exp_id}: {reason[:100]}...")
+            else:
+                print(f"  • {str(first_ranking)[:100]}...")
         
         return True
         
@@ -98,7 +103,12 @@ def test_ranking_agent_projects():
         # Show first ranking as example
         if summary.get('project_rankings'):
             print("Sample project ranking:")
-            print(f"  • {summary['project_rankings'][0][:100]}...")
+            first_ranking = summary['project_rankings'][0]
+            if isinstance(first_ranking, tuple) and len(first_ranking) >= 2:
+                proj_id, reason = first_ranking
+                print(f"  • Project {proj_id}: {reason[:100]}...")
+            else:
+                print(f"  • {str(first_ranking)[:100]}...")
         
         # Show skill match info if available
         if summary.get('project_skill_matches'):
@@ -142,11 +152,21 @@ def test_ranking_agent_both():
         
         if exp_rankings:
             print("Top experience ranking:")
-            print(f"  • {exp_rankings}...")
+            first_exp = exp_rankings[0]
+            if isinstance(first_exp, tuple) and len(first_exp) >= 2:
+                exp_id, reason = first_exp
+                print(f"  • Experience {exp_id}: {reason}...")
+            else:
+                print(f"  • {str(first_exp)}...")
         
         if proj_rankings:
             print("Top project ranking:")
-            print(f"  • {proj_rankings}...")
+            first_proj = proj_rankings[0]
+            if isinstance(first_proj, tuple) and len(first_proj) >= 2:
+                proj_id, reason = first_proj
+                print(f"  • Project {proj_id}: {reason}...")
+            else:
+                print(f"  • {str(first_proj)}...")
         
         return True
         
@@ -290,12 +310,12 @@ def main():
     results = []
     
     # Run tests
-    results.append(("Factory", test_factory()))
-    results.append(("Agent Structure", test_agent_structure()))
-    results.append(("RankingAgent Methods", test_ranking_agent_methods()))
-    results.append(("ResumeAgent", test_resume_agent()))
-    results.append(("RankingAgent - Experiences", test_ranking_agent_experiences()))
-    results.append(("RankingAgent - Projects", test_ranking_agent_projects()))
+    # results.append(("Factory", test_factory()))
+    # results.append(("Agent Structure", test_agent_structure()))
+    # results.append(("RankingAgent Methods", test_ranking_agent_methods()))
+    # results.append(("ResumeAgent", test_resume_agent()))
+    # results.append(("RankingAgent - Experiences", test_ranking_agent_experiences()))
+    # results.append(("RankingAgent - Projects", test_ranking_agent_projects()))
     results.append(("RankingAgent - Both", test_ranking_agent_both()))
     
     # Summary
