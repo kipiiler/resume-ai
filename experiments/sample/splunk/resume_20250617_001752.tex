@@ -1,0 +1,192 @@
+%-------------------------
+% Resume in Latex
+% Author : Jake Gutierrez
+% Based off of: https://github.com/sb2nov/resume
+% License : MIT
+%------------------------
+
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\input{glyphtounicode}
+
+
+%----------FONT OPTIONS----------
+% sans-serif
+% \usepackage[sfdefault]{FiraSans}
+% \usepackage[sfdefault]{roboto}
+% \usepackage[sfdefault]{noto-sans}
+% \usepackage[default]{sourcesanspro}
+
+% serif
+% \usepackage{CormorantGaramond}
+% \usepackage{charter}
+
+
+\pagestyle{fancy}
+\fancyhf{} % clear all header and footer fields
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Adjust margins
+\addtolength{\oddsidemargin}{-0.6in}
+\addtolength{\evensidemargin}{-0.6in}
+\addtolength{\textwidth}{1.2in}
+\addtolength{\topmargin}{-.5in}
+\addtolength{\textheight}{1.0in}
+
+\urlstyle{same}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+% Ensure that generate pdf is machine readable/ATS parsable
+\pdfgentounicode=1
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-6pt}
+}
+
+\newcommand{\resumeSubSubheading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \textit{\small#1} & \textit{\small #2} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & #2 \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
+
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.1in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+\begin{document}
+	\begin{center}
+		\textbf{\Huge \scshape Hoang Nguyen} \\ \vspace{1pt} 
+		\small 425-361-3396 $|$ \href{mailto:hoangng@uw.edu}{\underline{hoangng@uw.edu}} $|$ \href{https://github.com/kipiiler}{\underline{github.com/kipiiler}} $|$ \href{https://www.linkedin.com/in/kipiiler/}{\underline{linkedin.com/in/kipiiler}} $|$ \href{https://kipiiler.me}{\underline{kipiiler.me}}
+	\end{center}
+
+
+\section{Education}
+	\resumeSubHeadingListStart
+		\resumeSubheading
+			{University of Washington}{Expected Dec 2025}
+			{Bachelor's in Computer Science}{}	\resumeSubHeadingListEnd
+
+
+\vspace{-13pt}\section{Skills}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \footnotesize{\item{
+     \textbf{Languages}{: Python, C++, C, Golang, SQL, Java, TypeScript} \\
+     \textbf{Frameworks and Libraries}{: PyTorch, Numpy, Matplotlib, Sklearn, FastAPI, Flask, Django, CMake, vcpkg, CUDA, OpenGL, GLSL, POSIX, Gin, Postgres, Redis, MySQL, Docker, Nextjs, React, Node.js, Express.js, GraphQL, AWS, Google Cloud Platform, Spark, gRPC} \\
+     
+    }}
+ \end{itemize}
+
+
+\section{Experience}
+	\resumeSubHeadingListStart
+
+	\resumeSubheading
+		{Software Engineer Intern}{Oct 2023 -- Dec 2023}
+		{Yoomi Health}{Remote, WA}
+		\resumeItemListStart
+			\resumeItem{Engineered real-time body-pose tracking using TensorFlow.js and YOLOv5, which increased client-side render FPS from 20 to 60.}
+			\resumeItem{Developed a custom TypeScript visualization library with 20+ charts, integrating Nivo.js, which provided robust data analysis capabilities.}
+			\resumeItem{Implemented AWS Lambda and Cognito-based authentication workflows, which contributed to secure backend infrastructure.}
+		\resumeItemListEnd
+
+
+	\resumeSubheading
+		{Software Engineer Intern}{Jun 2023 -- Aug 2023}
+		{Rocket Mortage}{Detroit, MI}
+		\resumeItemListStart
+			\resumeItem{Developed a full-stack application using React, TypeScript, and AWS serverless technologies (Lambda, API Gateway, RDS), which streamlined internal coaching session analysis.}
+			\resumeItem{Integrated Microsoft Graph API and SAML-based SSO into the React frontend, which provided secure user authentication and real-time meeting data retrieval.}
+			\resumeItem{Implemented unit and e2e tests with Jest for the full-stack application, which ensured code quality and robustness in a cloud environment.}
+		\resumeItemListEnd
+
+
+	\resumeSubheading
+		{Software Engineering Officer}{Sep 2024 -- Apr 2025}
+		{Software Engineering Club (SWECC) UW}{Seattle, WA}
+		\resumeItemListStart
+			\resumeItem{Engineered an automated interview platform using Django, PostgreSQL, and AWS EC2, which saved 3 hours/week in officer time.}
+			\resumeItem{Developed a container monitoring service with FastAPI, Docker SDK, and DynamoDB, improving system uptime by 30\%.}
+			\resumeItem{Integrated CI/CD pipelines using GitHub Actions and Docker, reducing manual maintenance efforts by 50\%.}
+		\resumeItemListEnd
+
+	\resumeSubHeadingListEnd
+
+
+\section{Projects}
+	\resumeSubHeadingListStart
+
+	\resumeProjectHeading
+	{\textbf{Husky Holdem} $|$ \emph{Go, Python, Gin, Gorilla, Docker, RabbitMQ, Postgres, Redis}}{  }
+	\resumeItemListStart
+			\resumeItem{Developed distributed poker-bot platform using Go and Docker, which demonstrated skills in backend development and containerization.}
+			\resumeItem{Designed scalable API with Gin and Gorilla, by implementing hexagonal architecture, which highlighted REST API proficiency.}
+			\resumeItem{Integrated RabbitMQ for code execution and Postgres/Redis for data, which showcase knowledge of relevant technologies.}
+		\resumeItemListEnd
+
+
+	\resumeProjectHeading
+	{\textbf{Rick Sanchez Chatbot} $|$ \emph{Pytorch, Numpy, Docker, Redis, Postgres, HuggingFace, Puppeteer}}{  }
+	\resumeItemListStart
+			\resumeItem{Generated a Rick Sanchez-themed Discord chatbot by fine-tuning DialoGPT with PyTorch, which demonstrated proficiency in Python and transformer models.}
+			\resumeItem{Containerized chatbot with Docker, integrating Redis and Postgres for stateful interactions on Discord, which aligned with the job's emphasis on containerization and distributed systems.}
+			\resumeItem{Optimized text generation using hyperparameter tuning and prompt engineering, which improved model perplexity by 12\%, showcasing hands-on performance tuning and debugging.}
+		\resumeItemListEnd
+
+
+	\resumeProjectHeading
+	{\textbf{Lung Cancer Detection} $|$ \emph{Pytorch, Python, OpenCV}}{  }
+	\resumeItemListStart
+			\resumeItem{Developed four 3D U-Net CNN architectures using Python and PyTorch for lung cancer detection, achieving 78\% validation accuracy through iterative model design and training.}
+			\resumeItem{Implemented image preprocessing and augmentation techniques with OpenCV on a 63 MRI scan dataset, enhancing model generalization and performance.}
+			\resumeItem{Collaborated within a team, contributing to technical discussions and documentation, showcasing strong problem-solving and communication skills, and improving outcomes.}
+		\resumeItemListEnd
+
+	\resumeSubHeadingListEnd
+
+
+\end{document}

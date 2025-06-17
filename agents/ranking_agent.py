@@ -5,7 +5,7 @@ from langchain_core.messages import HumanMessage, AIMessage
 
 from agents.base_agents import BaseAgentState
 from agents.database_agent import DatabaseAgent
-from job_scraper import JobInfo
+from experiments.job_scraper import JobInfo
 
 class RankingAgentState(BaseAgentState):
     """State for the Ranking Agent."""

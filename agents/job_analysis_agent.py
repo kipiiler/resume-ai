@@ -4,7 +4,7 @@ import operator
 from langchain_core.messages import HumanMessage, AIMessage
 
 from agents.base_agents import BaseAgent, BaseAgentState
-from job_scraper import extract_job_info, JobInfo
+from experiments.job_scraper import extract_job_info, JobInfo
 from model.schema import JobPosting, JobPostingDB
 from services.job_posting import JobPostingService
 

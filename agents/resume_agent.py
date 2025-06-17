@@ -6,7 +6,7 @@ from langchain_core.output_parsers import StrOutputParser
 
 from agents.base_agents import BaseAgentState
 from agents.database_agent import DatabaseAgent
-from job_scraper import JobInfo
+from experiments.job_scraper import JobInfo
 
 class ResumeAgentState(BaseAgentState):
     """State for the Resume Agent."""

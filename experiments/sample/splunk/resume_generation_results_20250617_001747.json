@@ -1,0 +1,210 @@
+{
+    "job_info": {
+        "company_name": "Splunk",
+        "job_title": "Software Engineer Intern - Backend/Full-stack",
+        "location": "Remote, Colorado, North Carolina",
+        "job_type": "Internship",
+        "url": "https://jobs.jobvite.com/splunk-careers/job/o7n7vfwQ?nl=1&nl=1&fr=false&utm_source=Simplify&ref=Simplify"
+    },
+    "experience_results": [
+        {
+            "messages": [],
+            "error": "",
+            "item_id": 1,
+            "item_type": "experience",
+            "item_data": "Company: Yoomi Health (Remote, WA)\n                Role/Position: Software Engineer Intern\n                Duration: 2023-10 to 2023-12\n                Description: As a Software Engineer Intern, I created a custom TypeScript visualization library for internal analytics tools, featuring 20+ charts (bar, scatter, heatmap) with strong unit test coverage using Jest. I engineered a real-time body-pose tracking pipeline integrated into React clients, using TensorFlow.js, YOLOv5, and RTMPose. To ensure performance across devices, I implemented quantization-aware optimizations and dynamic model selection, raising client-side render FPS from 20 to 60. I also built a coordinate transformation service using a custom tree structure to preprocess pose data, halving load time. Additionally, I contributed to AWS Lambda + Cognito-based authentication workflows and extended our testing infrastructure with abstraction layers on top of React Testing Library to simulate interactivity. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints. Developed a TypeScript visualization library with 20+ charts and 95% unit test coverage. Built a real-time body-pose tracking pipeline (YOLOv5/RTMPose) with TensorFlow.js, reducing load time by 50% and tripling FPS. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.\n                Tech Stack: TypeScript, React, Nivo.js, Tensorflow.js, Jest, YOLOv5, RTMPose, AWS Lambda, AWS Cognito, Python, PyTorch",
+            "ranking_reason": "Best fit because this candidate demonstrates a strong ability to learn and apply new technologies, as evidenced by their work with TensorFlow.js, React, and TypeScript. Their experience building a real-time body-pose tracking pipeline, including performance optimization, showcases a practical understanding of problem-solving and a focus on impact. The use of unit tests further aligns with Splunk's emphasis on quality. The candidate's experience with AWS Lambda and Cognito, even if limited, provides some relevant cloud exposure. The candidate's experience is recent, showing a current ability to learn and adapt. The candidate's experience also shows a good understanding of the full development lifecycle.",
+            "job_info": {
+                "company_name": "Splunk",
+                "job_title": "Software Engineer Intern - Backend/Full-stack",
+                "location": "Remote, Colorado, North Carolina",
+                "job_type": "Internship",
+                "description": "Splunk is here to build a safer and more resilient digital world. The world's leading enterprises use our unified security and observability platform to keep their digital systems secure and reliable. If you become a Splunker, we want your whole, authentic self. You will experience Splunking and what defines our culture while honing the skills which separate our development teams from others. You will get to work with smart and hardworking individuals who are doing state of the art development work in areas of machine learning, artificial intelligence, data analytics, infrastructure and event correlations across silos to build best-in-class business analytics software.\n\nKey Responsibilities:\n*   Design, develop, code and test software systems, or applications within the scope of a contained, end-to-end project.\n*   Contribute through participation in agile development of project timelines, implementation design specifications, system flow diagrams, documentation, testing, and ongoing support of systems.\n*   Work under the close supervision of a mentor with weekly check-ins.",
+                "qualifications": [
+                    "Actively pursuing a Bachelors, Master's, or PhD in Computer Science, Software Engineering, Computer Engineering, Electrical Engineering, Mathematics or a related technical field, and a strong record of academic achievement",
+                    "At least one semester/quarter remaining to complete after the internship",
+                    "Available to work 40 hours a week for 15 weeks",
+                    "Familiarity with one mainstream programming language, such as Go, Java, or Python",
+                    "Exposure to docker, Kubernetes, or public cloud platforms (e.g. AWS, GCP, Azure)",
+                    "Exposure to working with REST APIs",
+                    "Familiarity with test-driven development, writing various levels of automated tests, such as unit test, functional test, integration test, system test, or performance / load test",
+                    "Able to learn new technologies quickly",
+                    "Experience collaborating with others in a fast-paced environment",
+                    "Strong communication skills, verbal and written"
+                ]
+            },
+            "bullet_points": [
+                "Engineered real-time body-pose tracking using TensorFlow.js and YOLOv5, which increased client-side render FPS from 20 to 60.",
+                "Developed a custom TypeScript visualization library with 20+ charts, integrating Nivo.js, which provided robust data analysis capabilities.",
+                "Implemented AWS Lambda and Cognito-based authentication workflows, which contributed to secure backend infrastructure."
+            ]
+        },
+        {
+            "messages": [],
+            "error": "",
+            "item_id": 3,
+            "item_type": "experience",
+            "item_data": "Company: Rocket Mortage (Detroit, MI)\n                Role/Position: Software Engineer Intern\n                Duration: 2023-06 to 2023-08\n                Description: During my internship with the DevCore team, I developed a full-stack application to track and analyze internal coaching sessions. The frontend (React + TypeScript) collected structured input, integrated with Microsoft Teams via Graph API to retrieve meeting data, and authenticated users with SAML-based Microsoft SSO. On the backend, I implemented a serverless API using AWS API Gateway, Lambda, and RDS (PostgreSQL) with Express.js for flexibility. The data pipeline automatically ingested and exported to the company\u2019s data warehouse. To ensure robustness, I wrote extensive unit and e2e tests with Jest. The project enabled training staff to save significant manual effort and generated actionable insights for leadership, transitioning from ad-hoc Excel sheets to a scalable analytics backend. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints. Built a full-stack internal training tool using React and serverless AWS stack, integrated with Microsoft Teams and Graph API for real-time coaching insights. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.\n                Tech Stack: React, TypeScript, SAML, Microsoft Azure, Microsoft Graph API, AWS API Gateway, AWS Lambda, AWS RDS, Express.js, Jest",
+            "ranking_reason": "Strong candidate due to their experience developing a full-stack application with React, TypeScript, and a serverless AWS backend. Their project aligns closely with the role's requirements, demonstrating familiarity with key technologies like React, AWS Lambda, API Gateway, and RDS. The use of unit and e2e tests further strengthens their profile. The candidate's ability to build a complete application from frontend to backend, integrating with external services (Microsoft Teams), indicates a good understanding of system architecture and practical problem-solving. The candidate's experience is recent, showing a current ability to learn and adapt.",
+            "job_info": {
+                "company_name": "Splunk",
+                "job_title": "Software Engineer Intern - Backend/Full-stack",
+                "location": "Remote, Colorado, North Carolina",
+                "job_type": "Internship",
+                "description": "Splunk is here to build a safer and more resilient digital world. The world's leading enterprises use our unified security and observability platform to keep their digital systems secure and reliable. If you become a Splunker, we want your whole, authentic self. You will experience Splunking and what defines our culture while honing the skills which separate our development teams from others. You will get to work with smart and hardworking individuals who are doing state of the art development work in areas of machine learning, artificial intelligence, data analytics, infrastructure and event correlations across silos to build best-in-class business analytics software.\n\nKey Responsibilities:\n*   Design, develop, code and test software systems, or applications within the scope of a contained, end-to-end project.\n*   Contribute through participation in agile development of project timelines, implementation design specifications, system flow diagrams, documentation, testing, and ongoing support of systems.\n*   Work under the close supervision of a mentor with weekly check-ins.",
+                "qualifications": [
+                    "Actively pursuing a Bachelors, Master's, or PhD in Computer Science, Software Engineering, Computer Engineering, Electrical Engineering, Mathematics or a related technical field, and a strong record of academic achievement",
+                    "At least one semester/quarter remaining to complete after the internship",
+                    "Available to work 40 hours a week for 15 weeks",
+                    "Familiarity with one mainstream programming language, such as Go, Java, or Python",
+                    "Exposure to docker, Kubernetes, or public cloud platforms (e.g. AWS, GCP, Azure)",
+                    "Exposure to working with REST APIs",
+                    "Familiarity with test-driven development, writing various levels of automated tests, such as unit test, functional test, integration test, system test, or performance / load test",
+                    "Able to learn new technologies quickly",
+                    "Experience collaborating with others in a fast-paced environment",
+                    "Strong communication skills, verbal and written"
+                ]
+            },
+            "bullet_points": [
+                "Developed a full-stack application using React, TypeScript, and AWS serverless technologies (Lambda, API Gateway, RDS), which streamlined internal coaching session analysis.",
+                "Integrated Microsoft Graph API and SAML-based SSO into the React frontend, which provided secure user authentication and real-time meeting data retrieval.",
+                "Implemented unit and e2e tests with Jest for the full-stack application, which ensured code quality and robustness in a cloud environment."
+            ]
+        },
+        {
+            "messages": [],
+            "error": "",
+            "item_id": 7,
+            "item_type": "experience",
+            "item_data": "Company: Software Engineering Club (SWECC) UW (Seattle, WA)\n                Role/Position: Software Engineering Officer\n                Duration: 2024-09 to 2025-04\n                Description: As a Software Engineering Officer, I built an automated interview pairing platform using Django, PostgreSQL, and AWS EC2, saving 3 hours/week in officer time. Created a container monitoring service using FastAPI and Docker SDK with DynamoDB, improving system uptime by 30%. Integrated CI/CD with GitHub Actions and Docker for seamless deployment and infrastructure management, reducing manual maintenance by 50%. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints. Built automation and monitoring systems to improve SWE Club infrastructure. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.\n                Tech Stack: Django, AWS EC2, PostgreSQL, FastAPI, Docker, DynamoDB, GitHub CI/CD",
+            "ranking_reason": "Solid option with a good foundation in relevant technologies like Docker, Python, and AWS. Their experience building automation and monitoring systems for the SWE Club demonstrates practical application of these skills. The use of FastAPI and the integration of CI/CD pipelines are also valuable. While the scope might be smaller than other experiences, the hands-on experience with Docker and AWS is directly transferable. The candidate's experience is recent, showing a current ability to learn and adapt.",
+            "job_info": {
+                "company_name": "Splunk",
+                "job_title": "Software Engineer Intern - Backend/Full-stack",
+                "location": "Remote, Colorado, North Carolina",
+                "job_type": "Internship",
+                "description": "Splunk is here to build a safer and more resilient digital world. The world's leading enterprises use our unified security and observability platform to keep their digital systems secure and reliable. If you become a Splunker, we want your whole, authentic self. You will experience Splunking and what defines our culture while honing the skills which separate our development teams from others. You will get to work with smart and hardworking individuals who are doing state of the art development work in areas of machine learning, artificial intelligence, data analytics, infrastructure and event correlations across silos to build best-in-class business analytics software.\n\nKey Responsibilities:\n*   Design, develop, code and test software systems, or applications within the scope of a contained, end-to-end project.\n*   Contribute through participation in agile development of project timelines, implementation design specifications, system flow diagrams, documentation, testing, and ongoing support of systems.\n*   Work under the close supervision of a mentor with weekly check-ins.",
+                "qualifications": [
+                    "Actively pursuing a Bachelors, Master's, or PhD in Computer Science, Software Engineering, Computer Engineering, Electrical Engineering, Mathematics or a related technical field, and a strong record of academic achievement",
+                    "At least one semester/quarter remaining to complete after the internship",
+                    "Available to work 40 hours a week for 15 weeks",
+                    "Familiarity with one mainstream programming language, such as Go, Java, or Python",
+                    "Exposure to docker, Kubernetes, or public cloud platforms (e.g. AWS, GCP, Azure)",
+                    "Exposure to working with REST APIs",
+                    "Familiarity with test-driven development, writing various levels of automated tests, such as unit test, functional test, integration test, system test, or performance / load test",
+                    "Able to learn new technologies quickly",
+                    "Experience collaborating with others in a fast-paced environment",
+                    "Strong communication skills, verbal and written"
+                ]
+            },
+            "bullet_points": [
+                "Engineered an automated interview platform using Django, PostgreSQL, and AWS EC2, which saved 3 hours/week in officer time.",
+                "Developed a container monitoring service with FastAPI, Docker SDK, and DynamoDB, improving system uptime by 30%.",
+                "Integrated CI/CD pipelines using GitHub Actions and Docker, reducing manual maintenance efforts by 50%."
+            ]
+        }
+    ],
+    "project_results": [
+        {
+            "messages": [],
+            "error": "",
+            "item_id": 2,
+            "item_type": "project",
+            "item_data": "Project Name: Husky Holdem\n                Duration: None to None\n                Description: Spearheaded development of a distributed poker-bot tournament platform using Go and Python. Used hexagonal architecture with Gin and Gorilla for scalable API design. Implemented Docker + RabbitMQ-based code execution framework that ran untrusted user code securely. Simulated gameplay using a Python poker engine and integrated Postgres and Redis for match data tracking. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints. A poker-bot tournament platform with safe containerized execution and gameplay simulation. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.\n                Tech Stack: Go, Python, Gin, Gorilla, Docker, RabbitMQ, Postgres, Redis",
+            "ranking_reason": "Best fit because the project demonstrates strong alignment with the role's requirements. It utilizes Go, Docker, and REST APIs, which are key technologies mentioned in the job description. The implementation of a distributed poker-bot tournament platform showcases an understanding of backend development, scalability, and containerization, all valuable skills for a Software Engineer Intern at Splunk. The use of RabbitMQ, Postgres, and Redis further indicates familiarity with relevant technologies. The project's architecture, including hexagonal design, suggests a focus on maintainability and testability, important aspects of software engineering.",
+            "job_info": {
+                "company_name": "Splunk",
+                "job_title": "Software Engineer Intern - Backend/Full-stack",
+                "location": "Remote, Colorado, North Carolina",
+                "job_type": "Internship",
+                "description": "Splunk is here to build a safer and more resilient digital world. The world's leading enterprises use our unified security and observability platform to keep their digital systems secure and reliable. If you become a Splunker, we want your whole, authentic self. You will experience Splunking and what defines our culture while honing the skills which separate our development teams from others. You will get to work with smart and hardworking individuals who are doing state of the art development work in areas of machine learning, artificial intelligence, data analytics, infrastructure and event correlations across silos to build best-in-class business analytics software.\n\nKey Responsibilities:\n*   Design, develop, code and test software systems, or applications within the scope of a contained, end-to-end project.\n*   Contribute through participation in agile development of project timelines, implementation design specifications, system flow diagrams, documentation, testing, and ongoing support of systems.\n*   Work under the close supervision of a mentor with weekly check-ins.",
+                "qualifications": [
+                    "Actively pursuing a Bachelors, Master's, or PhD in Computer Science, Software Engineering, Computer Engineering, Electrical Engineering, Mathematics or a related technical field, and a strong record of academic achievement",
+                    "At least one semester/quarter remaining to complete after the internship",
+                    "Available to work 40 hours a week for 15 weeks",
+                    "Familiarity with one mainstream programming language, such as Go, Java, or Python",
+                    "Exposure to docker, Kubernetes, or public cloud platforms (e.g. AWS, GCP, Azure)",
+                    "Exposure to working with REST APIs",
+                    "Familiarity with test-driven development, writing various levels of automated tests, such as unit test, functional test, integration test, system test, or performance / load test",
+                    "Able to learn new technologies quickly",
+                    "Experience collaborating with others in a fast-paced environment",
+                    "Strong communication skills, verbal and written"
+                ]
+            },
+            "bullet_points": [
+                "Developed distributed poker-bot platform using Go and Docker, which demonstrated skills in backend development and containerization.",
+                "Designed scalable API with Gin and Gorilla, by implementing hexagonal architecture, which highlighted REST API proficiency.",
+                "Integrated RabbitMQ for code execution and Postgres/Redis for data, which showcase knowledge of relevant technologies."
+            ]
+        },
+        {
+            "messages": [],
+            "error": "",
+            "item_id": 3,
+            "item_type": "project",
+            "item_data": "Project Name: Rick Sanchez Chatbot\n                Duration: None to None\n                Description: Built a Rick Sanchez-themed chatbot using DialoGPT and HuggingFace Transformers. Scraped over 650 dialogue lines using Puppeteer and automated data cleaning. Optimized text generation via hyperparameter tuning, batching, and prompt engineering, improving model perplexity by 12%. Containerized with Docker and deployed on Discord with Redis and Postgres support for state tracking. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints. A Discord chatbot mimicking Rick Sanchez using fine-tuned DialoGPT. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.\n                Tech Stack: Pytorch, Numpy, Docker, Redis, Postgres, HuggingFace, Puppeteer",
+            "ranking_reason": "Strong relevance due to its use of Python and Docker, both of which are listed in the job description. The project's focus on building a chatbot and integrating it with Discord demonstrates an understanding of API interactions and deployment. The use of Redis and Postgres for state tracking aligns with the requirements. While the project's domain is different from Splunk's focus, the technical skills and architectural considerations are transferable, and the project demonstrates an ability to work with relevant technologies.",
+            "job_info": {
+                "company_name": "Splunk",
+                "job_title": "Software Engineer Intern - Backend/Full-stack",
+                "location": "Remote, Colorado, North Carolina",
+                "job_type": "Internship",
+                "description": "Splunk is here to build a safer and more resilient digital world. The world's leading enterprises use our unified security and observability platform to keep their digital systems secure and reliable. If you become a Splunker, we want your whole, authentic self. You will experience Splunking and what defines our culture while honing the skills which separate our development teams from others. You will get to work with smart and hardworking individuals who are doing state of the art development work in areas of machine learning, artificial intelligence, data analytics, infrastructure and event correlations across silos to build best-in-class business analytics software.\n\nKey Responsibilities:\n*   Design, develop, code and test software systems, or applications within the scope of a contained, end-to-end project.\n*   Contribute through participation in agile development of project timelines, implementation design specifications, system flow diagrams, documentation, testing, and ongoing support of systems.\n*   Work under the close supervision of a mentor with weekly check-ins.",
+                "qualifications": [
+                    "Actively pursuing a Bachelors, Master's, or PhD in Computer Science, Software Engineering, Computer Engineering, Electrical Engineering, Mathematics or a related technical field, and a strong record of academic achievement",
+                    "At least one semester/quarter remaining to complete after the internship",
+                    "Available to work 40 hours a week for 15 weeks",
+                    "Familiarity with one mainstream programming language, such as Go, Java, or Python",
+                    "Exposure to docker, Kubernetes, or public cloud platforms (e.g. AWS, GCP, Azure)",
+                    "Exposure to working with REST APIs",
+                    "Familiarity with test-driven development, writing various levels of automated tests, such as unit test, functional test, integration test, system test, or performance / load test",
+                    "Able to learn new technologies quickly",
+                    "Experience collaborating with others in a fast-paced environment",
+                    "Strong communication skills, verbal and written"
+                ]
+            },
+            "bullet_points": [
+                "Generated a Rick Sanchez-themed Discord chatbot by fine-tuning DialoGPT with PyTorch, which demonstrated proficiency in Python and transformer models.",
+                "Containerized chatbot with Docker, integrating Redis and Postgres for stateful interactions on Discord, which aligned with the job's emphasis on containerization and distributed systems.",
+                "Optimized text generation using hyperparameter tuning and prompt engineering, which improved model perplexity by 12%, showcasing hands-on performance tuning and debugging."
+            ]
+        },
+        {
+            "messages": [],
+            "error": "",
+            "item_id": 4,
+            "item_type": "project",
+            "item_data": "Project Name: Lung Cancer Detection\n                Duration: None to None\n                Description: Created four U-Net CNN architectures for 3D MRI image segmentation to detect lung cancer. Preprocessed and augmented a dataset of 63 MRI scans to improve generalization. Achieved 78% accuracy on validation using a tailored training loop and spatial data augmentations. Worked as a team of two to iterate on model design and training strategies. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints. Used custom U-Nets to detect lung cancer from 3D MRI images with high accuracy. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.\n                Tech Stack: Pytorch, Python, OpenCV",
+            "ranking_reason": "Good option with a balanced view of technical strengths and applicability. The project leverages Python, which is a relevant language. The focus on image segmentation and use of CNNs, while not directly related to Splunk's core business, demonstrates strong problem-solving skills and an understanding of machine learning concepts. The project's collaborative nature and focus on achieving high accuracy are positive indicators. However, the lack of Docker or REST API experience makes it slightly less relevant than projects 2 and 3.",
+            "job_info": {
+                "company_name": "Splunk",
+                "job_title": "Software Engineer Intern - Backend/Full-stack",
+                "location": "Remote, Colorado, North Carolina",
+                "job_type": "Internship",
+                "description": "Splunk is here to build a safer and more resilient digital world. The world's leading enterprises use our unified security and observability platform to keep their digital systems secure and reliable. If you become a Splunker, we want your whole, authentic self. You will experience Splunking and what defines our culture while honing the skills which separate our development teams from others. You will get to work with smart and hardworking individuals who are doing state of the art development work in areas of machine learning, artificial intelligence, data analytics, infrastructure and event correlations across silos to build best-in-class business analytics software.\n\nKey Responsibilities:\n*   Design, develop, code and test software systems, or applications within the scope of a contained, end-to-end project.\n*   Contribute through participation in agile development of project timelines, implementation design specifications, system flow diagrams, documentation, testing, and ongoing support of systems.\n*   Work under the close supervision of a mentor with weekly check-ins.",
+                "qualifications": [
+                    "Actively pursuing a Bachelors, Master's, or PhD in Computer Science, Software Engineering, Computer Engineering, Electrical Engineering, Mathematics or a related technical field, and a strong record of academic achievement",
+                    "At least one semester/quarter remaining to complete after the internship",
+                    "Available to work 40 hours a week for 15 weeks",
+                    "Familiarity with one mainstream programming language, such as Go, Java, or Python",
+                    "Exposure to docker, Kubernetes, or public cloud platforms (e.g. AWS, GCP, Azure)",
+                    "Exposure to working with REST APIs",
+                    "Familiarity with test-driven development, writing various levels of automated tests, such as unit test, functional test, integration test, system test, or performance / load test",
+                    "Able to learn new technologies quickly",
+                    "Experience collaborating with others in a fast-paced environment",
+                    "Strong communication skills, verbal and written"
+                ]
+            },
+            "bullet_points": [
+                "Developed four 3D U-Net CNN architectures using Python and PyTorch for lung cancer detection, achieving 78% validation accuracy through iterative model design and training.",
+                "Implemented image preprocessing and augmentation techniques with OpenCV on a 63 MRI scan dataset, enhancing model generalization and performance.",
+                "Collaborated within a team, contributing to technical discussions and documentation, showcasing strong problem-solving and communication skills, and improving outcomes."
+            ]
+        }
+    ],
+    "generation_info": {
+        "timestamp": "20250617_001747",
+        "num_experiences": 3,
+        "num_projects": 3
+    }
+}
