@@ -105,7 +105,7 @@ def extract_job_info(url):
         
         # Get the root div content
         print("Extracting content...")
-        root_div = driver.find_element(By.ID, "root")
+        root_div = driver.find_element(By.TAG_NAME, "body")
         page_content = root_div.get_attribute('innerHTML')
         
         # Clean the HTML content

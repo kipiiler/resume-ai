@@ -1,10 +1,12 @@
 import json
-from typing import Dict, Any, List, TypedDict, Annotated, Sequence, Callable
+from typing import Dict, Any, List, Optional, TypedDict, Annotated, Sequence, Callable
 import operator
 from langchain_core.messages import HumanMessage, AIMessage
 
 from agents.base_agents import BaseAgent, BaseAgentState
 from job_scraper import extract_job_info, JobInfo
+from model.schema import JobPosting, JobPostingDB
+from services.job_posting import JobPostingService
 
 class JobAnalysisState(BaseAgentState):
     """State for the Job Analysis Agent."""
@@ -12,6 +14,9 @@ class JobAnalysisState(BaseAgentState):
     job_posting_url: str
     job_info: JobInfo
     job_technical_skills: List[str]
+    job_exists_in_db: bool
+    existing_job_posting: Optional[JobPostingDB]
+    error: str
 
 class JobAnalysisAgent(BaseAgent):
     """Agent for analyzing job postings and extracting structured job information."""
@@ -26,19 +31,115 @@ class JobAnalysisAgent(BaseAgent):
     def create_nodes(self) -> Dict[str, Callable]:
         """Create all nodes for the job analysis agent."""
         return {
+            "check_job_exists": self._create_job_exists_check_node(),
             "extract_job_info": self._create_job_extraction_node(),
-            "extract_technical_skills": self._create_technical_skills_extraction_node()
+            "load_existing_job": self._create_load_existing_job_node(),
+            "extract_technical_skills": self._create_technical_skills_extraction_node(),
+            "save_job_to_db": self._create_save_job_to_db_node()
         }
     
     def define_edges(self) -> List[tuple]:
         """Define the edges between nodes."""
         return [
-            ("extract_job_info", "extract_technical_skills")
+            # Conditional edge: if job exists, load it; otherwise extract it
+            ("check_job_exists", 
+             self._create_binary_condition_func("job_exists_in_db", "load_existing_job", "extract_job_info"),
+             {"load_existing_job": "load_existing_job", "extract_job_info": "extract_job_info"}),
+            
+            # Extract technical skills
+            ("extract_job_info", "extract_technical_skills"),
+
+            # save job to db
+            ("extract_technical_skills", "save_job_to_db"),
         ]
     
     def get_entry_point(self) -> str:
         """Return the entry point node name."""
-        return "extract_job_info"
+        return "check_job_exists"
+    
+    def _check_if_job_posting_exists(self, job_posting_url: str) -> Optional[JobPostingDB]:
+        """Check if a job posting exists in the database."""
+        job_posting_service = JobPostingService()
+        return job_posting_service.get_job_posting_by_url(job_posting_url)
+    
+    def _save_job_to_db(self, job_posting: JobPostingDB):
+        """Save a job posting to the database."""
+        job_posting_service = JobPostingService()
+        job_posting_service.create_job_posting(
+            JobPosting(
+                job_posting_url=job_posting.job_posting_url,
+                company_name=job_posting.company_name,
+                job_title=job_posting.job_title,
+                job_location=job_posting.job_location,
+                job_type=job_posting.job_type,
+                job_description=job_posting.job_description,
+                job_qualifications=job_posting.job_qualifications,
+                job_technical_skills=job_posting.job_technical_skills
+            )
+        )
+        return job_posting
+    
+    def _create_save_job_to_db_node(self):
+        """Create node to save a job posting to the database."""
+        def save_job_to_db(state: JobAnalysisState) -> JobAnalysisState:
+            return self._save_job_to_db(
+                JobPosting(
+                    job_posting_url=state["job_posting_url"],
+                    company_name=state["job_info"].company_name,
+                    job_title=state["job_info"].job_title,
+                    job_location=state["job_info"].location,
+                    job_type=state["job_info"].job_type,
+                    job_description=state["job_info"].description,
+                    job_qualifications=state["job_info"].qualifications,
+                    job_technical_skills=state["job_technical_skills"]
+                )
+            )
+        return save_job_to_db
+
+    
+    def _create_job_exists_check_node(self):
+        """Create node to check if a job posting exists in the database."""
+        def check_job_exists(state: JobAnalysisState) -> JobAnalysisState:
+            job_posting_url = state["job_posting_url"]
+            existing_job = self._check_if_job_posting_exists(job_posting_url)
+            
+            if existing_job:
+                return {
+                    "job_exists_in_db": True,
+                    "existing_job_posting": existing_job
+                }
+            else:
+                return {
+                    "job_exists_in_db": False,
+                    "existing_job_posting": None
+                }
+        return check_job_exists
+    
+    def _create_load_existing_job_node(self):
+        """Create node to load existing job data from database."""
+        def load_existing_job(state: JobAnalysisState) -> JobAnalysisState:
+            existing_job = state["existing_job_posting"]
+            print(f"Loading existing job: {existing_job}")
+            
+            if existing_job:
+                # Convert existing job posting to JobInfo object
+                job_info = JobInfo(
+                    company_name=existing_job.company_name,
+                    job_title=existing_job.job_title,
+                    location=existing_job.job_location,
+                    job_type=existing_job.job_type,
+                    description=existing_job.job_description,
+                    qualifications=existing_job.job_qualifications if existing_job.job_qualifications else []
+                )
+                
+                return {
+                    "job_info": job_info,
+                    "job_technical_skills": existing_job.job_technical_skills if existing_job.job_technical_skills else []
+                }
+            else:
+                return {"error": "No existing job posting found"}
+        
+        return load_existing_job
     
     def _create_job_extraction_node(self):
         """Create node to extract job information from URL."""
@@ -63,10 +164,15 @@ class JobAnalysisAgent(BaseAgent):
             if state.get("error"):
                 return state  # Pass through error state
             
+            # If skills were already loaded from database, skip extraction
+            if state.get("job_technical_skills") and len(state["job_technical_skills"]) > 0:
+                print("Using existing technical skills from database")
+                return {"job_technical_skills": state["job_technical_skills"]}
+            
             job_info = state["job_info"]
             try:
                 # Convert JobInfo to dict for the skills extraction method
-                job_info_dict = job_info.dict()
+                job_info_dict = job_info.model_dump()
                 skills = self._extract_technical_skills(job_info_dict)
                 return {"job_technical_skills": skills}
             except Exception as e:
@@ -170,6 +276,8 @@ Qualifications: {qualifications}"""
             "job_posting_url": job_posting_url,
             "job_info": None,
             "job_technical_skills": [],
+            "job_exists_in_db": False,
+            "existing_job_posting": None,
             "error": ""
         }
         

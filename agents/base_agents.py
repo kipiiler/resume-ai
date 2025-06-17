@@ -82,7 +82,18 @@ class BaseAgent(ABC):
     
     @abstractmethod
     def define_edges(self) -> List[tuple]:
-        """Define the edges between nodes."""
+        """Define the edges between nodes.
+        
+        Returns:
+            List of edge tuples in one of these formats:
+            - (from_node, to_node) for simple edges
+            - (from_node, condition_func, path_map) for conditional edges
+            - (from_node, condition_func, path_map, condition_name) for named conditional edges
+            
+        Examples:
+            Simple edge: ("node_a", "node_b")
+            Conditional edge: ("node_a", self._condition_func, {"success": "node_b", "failure": "node_c"})
+        """
         pass
     
     @abstractmethod
@@ -109,9 +120,21 @@ class BaseAgent(ABC):
                 workflow.add_edge(edge[0], edge[1])
             elif len(edge) == 3:
                 # Conditional edge: from_node -> condition_func -> {condition: to_node}
-                workflow.add_conditional_edges(edge[0], edge[1], edge[2])
+                from_node, condition_func, path_map = edge
+                workflow.add_conditional_edges(from_node, condition_func, path_map)
+            elif len(edge) == 4:
+                # Conditional edge with condition name: from_node -> condition_func -> {condition: to_node} -> condition_name
+                from_node, condition_func, path_map, condition_name = edge
+                workflow.add_conditional_edges(
+                    from_node, 
+                    condition_func, 
+                    path_map, 
+                    then=condition_name
+                )
+            else:
+                raise ValueError(f"Invalid edge format: {edge}. Expected 2, 3, or 4 elements.")
         
-        # Set entry point and end
+        # Set entry point
         workflow.set_entry_point(self.get_entry_point())
         
         # Add END edges for terminal nodes
@@ -128,8 +151,17 @@ class BaseAgent(ABC):
         nodes_with_outgoing = set()
         
         for edge in edges:
-            if len(edge) >= 2:
+            if len(edge) == 2:
+                # Simple edge
                 nodes_with_outgoing.add(edge[0])
+            elif len(edge) >= 3:
+                # Conditional edge
+                nodes_with_outgoing.add(edge[0])
+                # Add all destination nodes from conditional paths
+                if isinstance(edge[2], dict):
+                    for dest_node in edge[2].values():
+                        if dest_node != END:
+                            nodes_with_outgoing.add(dest_node)
         
         # Terminal nodes are those without outgoing edges
         terminal_nodes = all_nodes - nodes_with_outgoing
@@ -163,9 +195,51 @@ class BaseAgent(ABC):
             if len(edge) == 2:
                 viz += f"  {edge[0]} -> {edge[1]}\n"
             elif len(edge) == 3:
-                viz += f"  {edge[0]} -> [conditional] -> {edge[2]}\n"
+                from_node, condition_func, path_map = edge
+                condition_name = getattr(condition_func, '__name__', 'condition_func')
+                viz += f"  {edge[0]} -> [{condition_name}] -> {path_map}\n"
+            elif len(edge) == 4:
+                from_node, condition_func, path_map, condition_name = edge
+                condition_func_name = getattr(condition_func, '__name__', 'condition_func')
+                viz += f"  {edge[0]} -> [{condition_func_name}:{condition_name}] -> {path_map}\n"
         
         return viz
+    
+    def get_graph(self) -> StateGraph:
+        if not self.graph:
+            raise ValueError("Graph not built. Call _build_graph() first.")
+        
+        return self.graph.get_graph()
+    
+    def _create_conditional_edge_func(self, condition_key: str, default_path: str = END):
+        """Helper method to create conditional edge functions.
+        
+        Args:
+            condition_key: The key in the state to check for the condition
+            default_path: Default path if condition is not found
+            
+        Returns:
+            Function that returns the next node based on state condition
+        """
+        def condition_func(state):
+            return state.get(condition_key, default_path)
+        return condition_func
+    
+    def _create_binary_condition_func(self, condition_key: str, true_path: str, false_path: str):
+        """Helper method to create binary conditional edge functions.
+        
+        Args:
+            condition_key: The key in the state to check
+            true_path: Path to take if condition is True/truthy
+            false_path: Path to take if condition is False/falsy
+            
+        Returns:
+            Function that returns true_path or false_path based on state condition
+        """
+        def condition_func(state):
+            condition_value = state.get(condition_key, False)
+            return true_path if condition_value else false_path
+        return condition_func
 
 class AgentFactory:
     """Factory class for creating different types of agents."""

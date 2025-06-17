@@ -103,3 +103,26 @@ class CompanyDB(Base):
     website = Column(String)
     industry = Column(String)
     description = Column(String)
+
+class JobPosting(BaseModel):
+    job_posting_url: str
+    company_name: str
+    job_title: str
+    job_location: str
+    job_type: str
+    job_description: str
+    job_qualifications: List[str]
+    job_technical_skills: List[str]
+
+class JobPostingDB(Base):
+    __tablename__ = "job_postings"
+
+    id=Column(Integer, primary_key=True, index=True)
+    job_posting_url=Column(String)
+    company_name=Column(String)
+    job_title=Column(String)
+    job_location=Column(String)
+    job_type=Column(String)
+    job_description=Column(String)
+    job_qualifications=Column(JSON)
+    job_technical_skills=Column(JSON)
