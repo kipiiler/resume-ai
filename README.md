@@ -14,7 +14,6 @@ A sophisticated AI-powered resume generation system that analyzes job postings, 
 - [Examples](#examples)
 - [API Reference](#api-reference)
 - [Contributing](#contributing)
-- [Troubleshooting](#troubleshooting)
 - [Future Roadmap](#future-roadmap)
 - [License](#license)
 
@@ -469,8 +468,9 @@ This example demonstrates how Resume AI transforms generic experience descriptio
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Creative Commons Attribution-NonCommercial 4.0 International License - see the [LICENSE](LICENSE) file for details.
 
+For commercial licensing options, please contact the author.
 ---
 
 **Made with ❤️ by developers, for developers**
