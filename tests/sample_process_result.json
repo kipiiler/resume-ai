@@ -1,0 +1,31 @@
+[
+    {
+      "messages": [],
+      "error": "",
+      "item_id": 4,
+      "item_type": "project",
+      "item_data": "Project Name: Lung Cancer Detection\\nDuration: null to null\\nDescription: Created four U-Net CNN architectures for 3D MRI image segmentation to detect lung cancer. Preprocessed and augmented a dataset of 63 MRI scans to improve generalization. Achieved 78% accuracy on validation using a tailored training loop and spatial data augmentations. Worked as a team of two to iterate on model design and training strategies. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints. Used custom U-Nets to detect lung cancer from 3D MRI images with high accuracy.\\nTech Stack: Pytorch, Python, OpenCV",
+      "ranking_reason": "Best fit because the project demonstrates strong problem-solving skills in a domain (medical imaging) that could potentially align with applications in the federal ecosystem. The implementation of U-Net CNN architectures for 3D MRI image segmentation showcases technical complexity and the use of deep learning, which is highly relevant to NVIDIA's focus. The project's focus on accuracy and iterative model design, along with the use of Python and PyTorch, aligns well with the role's requirements. The candidate's ability to work in a team and achieve a concrete result (78% accuracy) further strengthens its appeal.",
+      "job_info": {
+        "company_name": "NVIDIA",
+        "job_title": "Developer Technology Engineer, Public Sector - New College Grad 2025",
+        "location": "US, CA, Santa Clara",
+        "job_type": "Full time",
+        "description": "NVIDIA is hiring passionate, world-class computer scientists and engineers to work in its Public Sector Developer Technology (Devtech) team! In this role, you will research and develop techniques to GPU-accelerate leading applications in fields targeting applications in the federal ecosystem. You will be performing in-depth analysis and optimization to ensure the best possible performance on current and next-generation GPU architectures.\\n\\nWhat you will be doing:\\n\\n* Working directly with key application developers to understand the current and future problems they are solving, crafting and optimizing core parallel algorithms and data structures to provide the best solutions using GPUs, through reference code development, direct contribution to the full software stack including libraries, applications, and high productivity software environments (e.g. Python).\\n* Collaborating closely with diverse groups at NVIDIA such as the architecture, research, libraries, tools, and system software teams to influence the design of architectures, software, and programming models, by investigating the impact on application performance and developer productivity.\\n* Occasional travel from time to time for conferences and on-site visits with developers.",
+        "qualifications": [
+          "Pursuing or recently completed a BS, MS, or PhD degree or equivalent experience in an engineering or computer science related discipline.",
+          "Programming fluency in C/C++ and/or Fortran with a deep understanding of software design, programming techniques, and algorithms.",
+          "Strong mathematical fundamentals, including linear algebra and numerical methods.",
+          "Experience with parallel programming, ideally CUDA C/C++ and OpenACC.",
+          "Domain expertise in data and graph analytics, signal processing, telecommunications, geographic information systems, machine learning, or deep learning.",
+          "Experience working within the Federal Government and the ability to hold a US security clearance"
+        ]
+      },
+      "bullet_points": [
+        "Developed four custom U-Net CNN architectures for 3D MRI image segmentation in PyTorch, which enabled lung cancer detection with 78% accuracy, demonstrating proficiency in deep learning and medical imaging.",
+        "Implemented data preprocessing and augmentation techniques using OpenCV on a dataset of 63 MRI scans, which enhanced model generalization and improved performance, aligning with the need for robust solutions in the federal ecosystem.",
+        "Collaborated within a team of two to iteratively refine model design and training strategies, which cultivated strong communication and problem-solving skills essential for adapting to emerging challenges in a collaborative environment."
+      ]
+    }
+  ]
+  

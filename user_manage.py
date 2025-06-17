@@ -94,6 +94,7 @@ def get_experience_input(user_id: int) -> Experience:
     console.print("\n[bold blue]Enter Experience Details[/bold blue]")
     
     company_name = Prompt.ask("Company Name")
+    role_title = Prompt.ask("Role/Position Title")
     company_location = Prompt.ask("Company Location (City, State)")
     start_date = get_date_input("Start Date")
     end_date = get_date_input("End Date")
@@ -107,6 +108,7 @@ def get_experience_input(user_id: int) -> Experience:
     return Experience(
         user_id=user_id,
         company_name=company_name,
+        role_title=role_title,
         company_location=company_location,
         start_date=start_date,
         end_date=end_date,
@@ -163,6 +165,7 @@ def display_user_experiences(user_id: int, show_ids: bool = False):
         table.add_column("Value", style="green")
         
         table.add_row("Company", exp.company_name)
+        table.add_row("Role/Position", exp.role_title)
         table.add_row("Location", exp.company_location)
         table.add_row("Position", exp.short_description)
         table.add_row("Duration", f"{exp.start_date} to {exp.end_date}")
@@ -227,6 +230,7 @@ def edit_experience(user_id: int):
     
     # Get updated values (with current values as defaults)
     company_name = Prompt.ask("Company Name", default=current_exp.company_name)
+    role_title = Prompt.ask("Role/Position Title", default=current_exp.role_title)
     company_location = Prompt.ask("Company Location", default=current_exp.company_location)
     start_date = Prompt.ask("Start Date (YYYY-MM)", default=current_exp.start_date)
     end_date = Prompt.ask("End Date (YYYY-MM)", default=current_exp.end_date)
@@ -241,6 +245,7 @@ def edit_experience(user_id: int):
     updated_exp = Experience(
         user_id=user_id,
         company_name=company_name,
+        role_title=role_title,
         company_location=company_location,
         start_date=start_date,
         end_date=end_date,
@@ -350,7 +355,7 @@ def load_data_from_json(user_id: int):
         for i, exp_data in enumerate(experiences_data):
             try:
                 # Validate required fields
-                required_fields = ['company_name', 'company_location', 'start_date', 'end_date', 
+                required_fields = ['company_name', 'role_title', 'company_location', 'start_date', 'end_date', 
                                  'short_description', 'long_description']
                 missing_fields = [field for field in required_fields if field not in exp_data]
                 if missing_fields:
@@ -360,6 +365,7 @@ def load_data_from_json(user_id: int):
                 experience = Experience(
                     user_id=user_id,
                     company_name=exp_data['company_name'],
+                    role_title=exp_data['role_title'],
                     company_location=exp_data['company_location'],
                     start_date=exp_data['start_date'],
                     end_date=exp_data['end_date'],
@@ -438,6 +444,7 @@ def export_data_to_json(user_id: int):
     for exp in experiences:
         experiences_data.append({
             'company_name': exp.company_name,
+            'role_title': exp.role_title,
             'company_location': exp.company_location,
             'start_date': exp.start_date,
             'end_date': exp.end_date,

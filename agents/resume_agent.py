@@ -55,6 +55,7 @@ class ResumeAgent(DatabaseAgent):
                 # Format the experience data into a comprehensive description
                 description = f"""
                 Company: {experience.company_name} ({experience.company_location})
+                Role/Position: {experience.role_title}
                 Duration: {experience.start_date} to {experience.end_date}
                 Description: {experience.long_description + " " + experience.short_description}
                 Tech Stack: {', '.join(experience.tech_stack) if experience.tech_stack else 'Not specified'}
@@ -204,7 +205,7 @@ Rules:
 8. Focus on technical details (using specific technologies, algorithms, etc.)
 9. Emphasize professional impact and business value
 10. If job context is provided, tailor bullet points to highlight relevant skills and technologies
-11. Do not include write any generic bullet points (example: Contributed to technical documentation, planning, etc...). Only include thing that is technical and relevant to the job.
+11. Do not include write any generic bullet points (example: Contributed to technical documentation, planning, collaboration, etc...). Only include thing that is technical and relevant to the job.
 
 Example format:
 Led a team of 5 developers by implementing microservices architecture, which resulted in 40% improved system performance
@@ -232,7 +233,7 @@ Rules:
 9. Emphasize problem-solving skills and technical expertise
 10. Highlight learning outcomes and technical growth
 11. If job context is provided, tailor bullet points to highlight relevant skills and technologies
-12. Do not include write any generic bullet points (example: Contributed to technical documentation, etc...). Only include thing that is technical and relevant to the job.
+12. Do not include write any generic bullet points (example: Contributed to technical documentation, planning, collaboration, etc...). Only include thing that is technical and relevant to the job.
 
 Example format:
 Developed machine learning model by implementing neural networks in TensorFlow, which achieved 95% accuracy in classification tasks

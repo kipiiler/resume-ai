@@ -8,6 +8,7 @@ class Experience(BaseModel):
     id: Optional[int] = None
     user_id: Optional[int] = None
     company_name: str
+    role_title: str
     company_location: str
     start_date: str
     end_date: str
@@ -70,6 +71,7 @@ class ExperienceDB(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), index=True)
     company_name = Column(String)
+    role_title = Column(String)
     company_location = Column(String)
     start_date = Column(String)
     end_date = Column(String)

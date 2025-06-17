@@ -11,6 +11,7 @@ class ExperienceService:
             db_experience = ExperienceDB(
                 user_id=experience.user_id,
                 company_name=experience.company_name,
+                role_title=experience.role_title,
                 company_location=experience.company_location,
                 start_date=experience.start_date,
                 end_date=experience.end_date,
