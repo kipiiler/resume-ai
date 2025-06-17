@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 from dotenv import load_dotenv
 load_dotenv()
 import threading
@@ -103,6 +104,41 @@ def generate_resume():
             f.write("\n")
             
     print(f"\nResults saved to {log_filename}")
+
+
+    # save to a json file
+    # Convert results to JSON-serializable format
+    experience_results_json = []
+    for result in experience_results:
+        if isinstance(result, dict):
+            # Make a copy to avoid modifying original
+            result_copy = result.copy()
+            # Convert JobInfo to dict if present
+            if 'job_info' in result_copy:
+                result_copy['job_info'] = result_copy['job_info'].__dict__
+            experience_results_json.append(result_copy)
+        else:
+            experience_results_json.append(result.__dict__)
+            
+    project_results_json = []
+    for result in project_results:
+        if isinstance(result, dict):
+            # Make a copy to avoid modifying original
+            result_copy = result.copy()
+            # Convert JobInfo to dict if present 
+            if 'job_info' in result_copy:
+                result_copy['job_info'] = result_copy['job_info'].__dict__
+            project_results_json.append(result_copy)
+        else:
+            project_results_json.append(result.__dict__)
+            
+    # Save to JSON file
+    with open("resume_generation_results.json", "w") as f:
+        json.dump({
+            "experience_results": experience_results_json,
+            "project_results": project_results_json
+        }, f, indent=4)
+    print(f"Results saved to resume_generation_results.json")
 
 if __name__ == "__main__":
     generate_resume()

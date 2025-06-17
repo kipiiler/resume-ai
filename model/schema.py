@@ -34,6 +34,7 @@ class User(BaseModel):
     phone: str
     personality: Optional[List[str]] = None
     education: str
+    degree: str
     major: str
     grade: Optional[str] = None
     location: str
@@ -58,6 +59,7 @@ class UserDB(Base):
     phone = Column(String)
     personality = Column(JSON)
     education = Column(String)
+    degree = Column(String)
     major = Column(String)
     grade = Column(String, nullable=True)
     location = Column(String)

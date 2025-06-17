@@ -14,6 +14,7 @@ class UserService:
                 phone=user.phone,
                 personality=user.personality,
                 education=user.education,
+                degree=user.degree,
                 major=user.major,
                 grade=user.grade,
                 location=user.location,

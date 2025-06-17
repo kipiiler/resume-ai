@@ -36,7 +36,8 @@ def get_or_create_user() -> int:
     console.print("[yellow]User not found. Let's create a new profile.[/yellow]")
     name = Prompt.ask("Full Name")
     phone = Prompt.ask("Phone Number")
-    education = Prompt.ask("Education Level (e.g., Bachelor's, Master's)")
+    education = Prompt.ask("University")
+    degree = Prompt.ask("Degree (e.g., Bachelor's, Master's)")
     major = Prompt.ask("Major/Field of Study")
     location = Prompt.ask("Location (City, State)")
     
@@ -55,6 +56,7 @@ def get_or_create_user() -> int:
         phone=phone,
         personality=personality,
         education=education,
+        degree=degree,
         major=major,
         grade=grade if grade else None,
         location=location,
