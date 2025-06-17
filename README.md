@@ -1,3 +1,7 @@
+> 👍 Note
+>
+> This thing is not reliable, use at your own cause. It can make up stuff. Hype yourself but be honest
+
 # 🚀 Resume AI - Intelligent Resume Generation System
 
 A sophisticated AI-powered resume generation system that analyzes job postings, ranks your experiences and projects, and generates tailored bullet points using Large Language Models (LLMs).
