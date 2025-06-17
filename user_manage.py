@@ -8,9 +8,9 @@ from rich.prompt import Prompt, Confirm
 from rich.table import Table
 
 # Import service abstractions and models
-from service.user import UserService
-from service.experience import ExperienceService
-from service.project import ProjectService
+from services.user import UserService
+from services.experience import ExperienceService
+from services.project import ProjectService
 from model.schema import User, Experience, Project
 
 console = Console()
