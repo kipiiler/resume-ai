@@ -174,15 +174,14 @@ class ResumeAgent(DatabaseAgent):
             bullet_points_text = chain.invoke(prompt_input)
             bullet_points_list = self._parse_bullet_points(bullet_points_text)
             
-            # Ensure we have exactly 3 bullet points
-            if len(bullet_points_list) < 3:
-                # If we don't have enough, pad with generic ones
-                while len(bullet_points_list) < 3:
-                    if item_type == "project":
-                        bullet_points_list.append(f"Developed innovative solution by applying technical expertise, which demonstrated problem-solving capabilities")
-                    else:
-                        bullet_points_list.append(f"Contributed to team success by applying technical skills, which enhanced project outcomes")
-            
+            # # Ensure we have exactly 3 bullet points
+            # if len(bullet_points_list) < 3:
+            #     # If we don't have enough, pad with generic ones
+            #     while len(bullet_points_list) < 3:
+            #         if item_type == "project":
+            #             bullet_points_list.append(f"Developed innovative solution by applying technical expertise, which demonstrated problem-solving capabilities")
+            #         else:
+            #             bullet_points_list.append(f"Contributed to team success by applying technical skills, which enhanced project outcomes")
             return {"bullet_points": bullet_points_list[:3]}
         
         return generate_bullet_points
@@ -207,7 +206,7 @@ Rules:
 10. If job context is provided, tailor bullet points to highlight relevant skills and technologies
 11. Do not include write any generic bullet points (example: Contributed to technical documentation, planning, collaboration, etc...). Only include thing that is technical and relevant to the job.
 12. Each bullet point should be short, concise, and to the point.
-13. We want to save space, therefore, each bullet point should be around 100 characters. if it is too long, do around 200 characters to fill the space.
+13. We want to save space, therefore, each bullet point should be less than 100 characters. If it is too long, do less than 250 characters but more than 200 characters to fill the space.
 
 Example format:
 Led a team of 5 developers by implementing microservices architecture, which resulted in 40% improved system performance
@@ -224,7 +223,7 @@ Optimized database queries by implementing caching strategies, which achieved 60
 The XYZ format is: Accomplished [X] by implementing [Y], which led to [Z].
 
 Rules:
-1. Generate EXACTLY 3 bullet points
+1. Generate EXACTLY 2 bullet points
 2. Each bullet point should be on a separate line
 3. Start each bullet point with an action verb
 4. Include specific metrics and achievements when possible
@@ -237,13 +236,13 @@ Rules:
 11. If job context is provided, tailor bullet points to highlight relevant skills and technologies
 12. Do not include write any generic bullet points (example: Contributed to technical documentation, planning, collaboration, etc...). Only include thing that is technical and relevant to the job.
 13. Each bullet point should be short, concise, and to the point.
-14. We want to save space, therefore, each bullet point should be around 100 characters. if it is too long, do around 200 characters to fill the space.
+14. We want to save space, therefore, each bullet point should be less than 100 characters. If it is too long, do less than 250 characters but more than 200 characters to fill the space.
 
 Example format:
 Developed machine learning model by implementing neural networks in TensorFlow, which achieved 95% accuracy in classification tasks
 Built full-stack web application by integrating React frontend with Node.js backend, which demonstrated end-to-end development skills
 Designed scalable database architecture by implementing MongoDB with Redis caching, which supported 10,000+ concurrent users""",
-            human_message="Generate 3 bullet points for this {item_type}: {item_data}{ranking_context}{job_context}"
+            human_message="Generate 2 bullet points for this {item_type}: {item_data}{ranking_context}{job_context}"
         )
     
     def generate_bullet_points_for_experience(self, experience_id: int, ranking_reason: Optional[str] = None, job_info: Optional[JobInfo] = None) -> Dict[str, Any]:

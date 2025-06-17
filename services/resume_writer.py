@@ -1,13 +1,11 @@
 import sys
 import os
 
-from click import Tuple
-
 # Add the project root directory to Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from datetime import datetime
-from typing import List
+from typing import List, Tuple
 from services.user import UserService
 from services.experience import ExperienceService
 from services.project import ProjectService
@@ -33,7 +31,7 @@ class ResumeWriter:
         result += f"\\href{{{config.GITHUB_URL}}}{{\\underline{{github.com/{config.GITHUB_SHORT_HANDLE}}}}} $|$ "
         result += f"\\href{{{config.LINKEDIN_URL}}}{{\\underline{{linkedin.com/in/{config.LINKEDIN_SHORT_HANDLE}}}}}"
         if config.PORTFOLIO_URL:
-            result += f" $|$ \\href{{{config.PORTFOLIO_URL}}}{{\\underline{{Portfolio}}}}\n"
+            result += f" $|$ \\href{{{config.PORTFOLIO_URL}}}{{\\underline{{{config.PORTFOLIO_SHORT_HANDLE}}}}}\n"
         else:
             result += "\n"
         result += "\t\\end{center}\n"
@@ -168,6 +166,8 @@ class ResumeWriter:
         for proj_id, bullet_points in proj:
             result += self._write_project_with_bullet_points(proj_id, bullet_points)
         result += "\t\\resumeSubHeadingListEnd\n"
+        result += "\n"
+        return result
 
     def write_resume(self, user_id: int, file_path: str, exp: List[Tuple[int, List[str]]], proj: List[Tuple[int, List[str]]]):
         """

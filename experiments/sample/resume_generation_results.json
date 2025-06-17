@@ -1,0 +1,172 @@
+{
+    "experience_results": [
+        {
+            "messages": [],
+            "error": "",
+            "item_id": 2,
+            "item_type": "experience",
+            "item_data": "Company: Visual Concepts (Seattle, WA)\n                Role/Position: Software Engineer Intern\n                Duration: 2024-06 to 2024-09\n                Description: At Visual Concepts, I developed a GPU/CPU/memory profiling toolkit for character rendering pipelines in NBA2K using OpenGL, GLSL, CUDA, and PSSL. For my first project, I built a framework to benchmark compression algorithms, successfully reducing NPC 3D model memory usage by 50% using a custom vector quantization scheme that lowered bandwidth usage by 30%. In the second project, I implemented a prototype GPU ray tracer to compare BVH layouts and constructed a mesh clustering algorithm to maximize vertex cache reuse. My CUDA kernels for BVH construction employed warp-level parallelization and shared memory, improving build times. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints. Built an OpenGL + CUDA profiling tool for NBA2K character rendering. Shipped a mesh compression system that halved 3D model memory usage, and implemented fast GPU ray-tracing algorithms. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.\n                Tech Stack: C++, OpenGL, CUDA, GLSL, PSSL, CMake, vcpkg, Python",
+            "ranking_reason": "Best fit because this experience demonstrates a strong foundation in GPU programming (CUDA), C++, and performance optimization, directly aligning with the core requirements of the role. The candidate's work on profiling tools and mesh compression showcases their ability to tackle complex performance challenges, which is crucial for the Devtech role. The experience also highlights their ability to work with OpenGL and GLSL, which could be beneficial for understanding the graphics pipeline. The candidate's achievements in reducing memory usage and improving build times indicate a strong understanding of optimization techniques and their impact.",
+            "job_info": {
+                "company_name": "NVIDIA",
+                "job_title": "Developer Technology Engineer, Public Sector - New College Grad 2025",
+                "location": "US, CA, Santa Clara",
+                "job_type": "Full time",
+                "description": "NVIDIA is hiring passionate, world-class computer scientists and engineers to work in its Public Sector Developer Technology (Devtech) team! In this role, you will research and develop techniques to GPU-accelerate leading applications in fields targeting applications in the federal ecosystem. You will be performing in-depth analysis and optimization to ensure the best possible performance on current and next-generation GPU architectures.\n\nWhat you will be doing:\n\n*   Working directly with key application developers to understand the current and future problems they are solving, crafting and optimizing core parallel algorithms and data structures to provide the best solutions using GPUs, through reference code development, direct contribution to the full software stack including libraries, applications, and high productivity software environments (e.g. Python).\n*   Collaborating closely with diverse groups at NVIDIA such as the architecture, research, libraries, tools, and system software teams to influence the design of architectures, software, and programming models, by investigating the impact on application performance and developer productivity.\n*   Occasional travel from time to time for conferences and on-site visits with developers.",
+                "qualifications": [
+                    "Pursuing or recently completed a BS, MS, or PhD degree or equivalent experience in an engineering or computer science related discipline.",
+                    "Programming fluency in C/C++ and/or Fortran with a deep understanding of software design, programming techniques, and algorithms.",
+                    "Strong mathematical fundamentals, including linear algebra and numerical methods.",
+                    "Experience with parallel programming, ideally CUDA C/C++ and OpenACC.",
+                    "Domain expertise in data and graph analytics, signal processing, telecommunications, geographic information systems, machine learning, or deep learning.",
+                    "Experience working within the Federal Government and the ability to hold a US security clearance"
+                ]
+            },
+            "bullet_points": [
+                "Developed CUDA kernels for BVH construction by employing warp-level parallelization, which boosted build times.",
+                "Engineered a mesh compression system by implementing custom vector quantization, which decreased 3D model memory usage by 50%.",
+                "Built an OpenGL + CUDA profiling tool for character rendering pipelines, which improved rendering performance analysis in NBA2K."
+            ]
+        },
+        {
+            "messages": [],
+            "error": "",
+            "item_id": 5,
+            "item_type": "experience",
+            "item_data": "Company: Efeslab University of Washington (Seattle, WA)\n                Role/Position: Research Assistant\n                Duration: 2024-12 to 2025-05\n                Description: I developed multi-agent collaboration models to detect cloud reliability issues, processing over 1 million logs using Python and LLMs (vLLM). Created a benchmarking framework for consumer GPUs by implementing custom DAG schedulers and GPU partitioning to enable efficient workload execution. Applied evolutionary algorithms to optimize GPU anomaly detection pipelines, resulting in a 9.5% increase in F1 scores and noticeable cost reduction. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints. Researching AI and GPU anomaly detection in cloud systems using LLMs and Python DAG schedulers. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.\n                Tech Stack: Python, vLLM, CUDA, Nsight, Linux",
+            "ranking_reason": "Strong candidate due to their experience in AI and GPU anomaly detection in cloud systems using Python and CUDA. This aligns well with the role's focus on GPU acceleration and the candidate's experience with LLMs and DAG schedulers suggests an understanding of parallel processing concepts. The candidate's research focus and achievements in improving F1 scores and reducing costs demonstrate a strong aptitude for problem-solving and optimization, which are essential for the role. The use of Python and CUDA are also directly relevant to the job description.",
+            "job_info": {
+                "company_name": "NVIDIA",
+                "job_title": "Developer Technology Engineer, Public Sector - New College Grad 2025",
+                "location": "US, CA, Santa Clara",
+                "job_type": "Full time",
+                "description": "NVIDIA is hiring passionate, world-class computer scientists and engineers to work in its Public Sector Developer Technology (Devtech) team! In this role, you will research and develop techniques to GPU-accelerate leading applications in fields targeting applications in the federal ecosystem. You will be performing in-depth analysis and optimization to ensure the best possible performance on current and next-generation GPU architectures.\n\nWhat you will be doing:\n\n*   Working directly with key application developers to understand the current and future problems they are solving, crafting and optimizing core parallel algorithms and data structures to provide the best solutions using GPUs, through reference code development, direct contribution to the full software stack including libraries, applications, and high productivity software environments (e.g. Python).\n*   Collaborating closely with diverse groups at NVIDIA such as the architecture, research, libraries, tools, and system software teams to influence the design of architectures, software, and programming models, by investigating the impact on application performance and developer productivity.\n*   Occasional travel from time to time for conferences and on-site visits with developers.",
+                "qualifications": [
+                    "Pursuing or recently completed a BS, MS, or PhD degree or equivalent experience in an engineering or computer science related discipline.",
+                    "Programming fluency in C/C++ and/or Fortran with a deep understanding of software design, programming techniques, and algorithms.",
+                    "Strong mathematical fundamentals, including linear algebra and numerical methods.",
+                    "Experience with parallel programming, ideally CUDA C/C++ and OpenACC.",
+                    "Domain expertise in data and graph analytics, signal processing, telecommunications, geographic information systems, machine learning, or deep learning.",
+                    "Experience working within the Federal Government and the ability to hold a US security clearance"
+                ]
+            },
+            "bullet_points": [
+                "Developed GPU anomaly detection pipelines using CUDA, optimizing for 9.5% higher F1 scores, showcasing parallel processing proficiency.",
+                "Implemented custom DAG schedulers for efficient workload execution on consumer GPUs, enhancing resource utilization and performance.",
+                "Utilized Python and vLLM to process 1M+ logs for cloud reliability, demonstrating AI and LLM expertise in a research context."
+            ]
+        },
+        {
+            "messages": [],
+            "error": "",
+            "item_id": 1,
+            "item_type": "experience",
+            "item_data": "Company: Yoomi Health (Remote, WA)\n                Role/Position: Software Engineer Intern\n                Duration: 2023-10 to 2023-12\n                Description: As a Software Engineer Intern, I created a custom TypeScript visualization library for internal analytics tools, featuring 20+ charts (bar, scatter, heatmap) with strong unit test coverage using Jest. I engineered a real-time body-pose tracking pipeline integrated into React clients, using TensorFlow.js, YOLOv5, and RTMPose. To ensure performance across devices, I implemented quantization-aware optimizations and dynamic model selection, raising client-side render FPS from 20 to 60. I also built a coordinate transformation service using a custom tree structure to preprocess pose data, halving load time. Additionally, I contributed to AWS Lambda + Cognito-based authentication workflows and extended our testing infrastructure with abstraction layers on top of React Testing Library to simulate interactivity. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints. Developed a TypeScript visualization library with 20+ charts and 95% unit test coverage. Built a real-time body-pose tracking pipeline (YOLOv5/RTMPose) with TensorFlow.js, reducing load time by 50% and tripling FPS. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.\n                Tech Stack: TypeScript, React, Nivo.js, Tensorflow.js, Jest, YOLOv5, RTMPose, AWS Lambda, AWS Cognito, Python, PyTorch",
+            "ranking_reason": "Solid option with strong potential. This experience showcases the candidate's ability to work with GPU-accelerated technologies (TensorFlow.js) and optimize performance. The development of a real-time body-pose tracking pipeline and the creation of a visualization library demonstrate strong problem-solving skills and the ability to deliver impactful results. While the technologies used (TypeScript, React) are not directly listed in the job description, the candidate's experience with Python and PyTorch, along with the demonstrated ability to optimize performance, suggests a good foundation for learning the required technologies. The candidate's experience in improving client-side render FPS from 20 to 60 demonstrates a strong understanding of performance optimization.",
+            "job_info": {
+                "company_name": "NVIDIA",
+                "job_title": "Developer Technology Engineer, Public Sector - New College Grad 2025",
+                "location": "US, CA, Santa Clara",
+                "job_type": "Full time",
+                "description": "NVIDIA is hiring passionate, world-class computer scientists and engineers to work in its Public Sector Developer Technology (Devtech) team! In this role, you will research and develop techniques to GPU-accelerate leading applications in fields targeting applications in the federal ecosystem. You will be performing in-depth analysis and optimization to ensure the best possible performance on current and next-generation GPU architectures.\n\nWhat you will be doing:\n\n*   Working directly with key application developers to understand the current and future problems they are solving, crafting and optimizing core parallel algorithms and data structures to provide the best solutions using GPUs, through reference code development, direct contribution to the full software stack including libraries, applications, and high productivity software environments (e.g. Python).\n*   Collaborating closely with diverse groups at NVIDIA such as the architecture, research, libraries, tools, and system software teams to influence the design of architectures, software, and programming models, by investigating the impact on application performance and developer productivity.\n*   Occasional travel from time to time for conferences and on-site visits with developers.",
+                "qualifications": [
+                    "Pursuing or recently completed a BS, MS, or PhD degree or equivalent experience in an engineering or computer science related discipline.",
+                    "Programming fluency in C/C++ and/or Fortran with a deep understanding of software design, programming techniques, and algorithms.",
+                    "Strong mathematical fundamentals, including linear algebra and numerical methods.",
+                    "Experience with parallel programming, ideally CUDA C/C++ and OpenACC.",
+                    "Domain expertise in data and graph analytics, signal processing, telecommunications, geographic information systems, machine learning, or deep learning.",
+                    "Experience working within the Federal Government and the ability to hold a US security clearance"
+                ]
+            },
+            "bullet_points": [
+                "Engineered a real-time body-pose tracking pipeline using TensorFlow.js and YOLOv5, which boosted client-side render FPS from 20 to 60, demonstrating performance optimization skills.",
+                "Developed a custom TypeScript visualization library with 20+ charts, coupled with 95% unit test coverage using Jest, showing proficiency in front-end development and testing methodologies.",
+                "Built a coordinate transformation service using a custom tree structure to preprocess pose data, which reduced load time by 50%, showcasing expertise in data processing and algorithm design."
+            ]
+        }
+    ],
+    "project_results": [
+        {
+            "messages": [],
+            "error": "",
+            "item_id": 4,
+            "item_type": "project",
+            "item_data": "Project Name: Lung Cancer Detection\n                Duration: None to None\n                Description: Created four U-Net CNN architectures for 3D MRI image segmentation to detect lung cancer. Preprocessed and augmented a dataset of 63 MRI scans to improve generalization. Achieved 78% accuracy on validation using a tailored training loop and spatial data augmentations. Worked as a team of two to iterate on model design and training strategies. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints. Used custom U-Nets to detect lung cancer from 3D MRI images with high accuracy. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.\n                Tech Stack: Pytorch, Python, OpenCV",
+            "ranking_reason": "Best fit because this project demonstrates strong domain relevance to potential applications in the federal ecosystem, particularly in medical imaging. The implementation of U-Net CNN architectures for 3D MRI image segmentation showcases the candidate's ability to handle complex technical problems and apply deep learning techniques. The project's focus on image processing and model optimization aligns well with the role's requirements. The candidate's experience with data preprocessing, augmentation, and iterative model design highlights their technical foundation and problem-solving skills. The project's success in achieving high accuracy further demonstrates the candidate's ability to deliver impactful results.",
+            "job_info": {
+                "company_name": "NVIDIA",
+                "job_title": "Developer Technology Engineer, Public Sector - New College Grad 2025",
+                "location": "US, CA, Santa Clara",
+                "job_type": "Full time",
+                "description": "NVIDIA is hiring passionate, world-class computer scientists and engineers to work in its Public Sector Developer Technology (Devtech) team! In this role, you will research and develop techniques to GPU-accelerate leading applications in fields targeting applications in the federal ecosystem. You will be performing in-depth analysis and optimization to ensure the best possible performance on current and next-generation GPU architectures.\n\nWhat you will be doing:\n\n*   Working directly with key application developers to understand the current and future problems they are solving, crafting and optimizing core parallel algorithms and data structures to provide the best solutions using GPUs, through reference code development, direct contribution to the full software stack including libraries, applications, and high productivity software environments (e.g. Python).\n*   Collaborating closely with diverse groups at NVIDIA such as the architecture, research, libraries, tools, and system software teams to influence the design of architectures, software, and programming models, by investigating the impact on application performance and developer productivity.\n*   Occasional travel from time to time for conferences and on-site visits with developers.",
+                "qualifications": [
+                    "Pursuing or recently completed a BS, MS, or PhD degree or equivalent experience in an engineering or computer science related discipline.",
+                    "Programming fluency in C/C++ and/or Fortran with a deep understanding of software design, programming techniques, and algorithms.",
+                    "Strong mathematical fundamentals, including linear algebra and numerical methods.",
+                    "Experience with parallel programming, ideally CUDA C/C++ and OpenACC.",
+                    "Domain expertise in data and graph analytics, signal processing, telecommunications, geographic information systems, machine learning, or deep learning.",
+                    "Experience working within the Federal Government and the ability to hold a US security clearance"
+                ]
+            },
+            "bullet_points": [
+                "Developed four U-Net CNN architectures for 3D MRI image segmentation using PyTorch, which achieved 78% accuracy on validation.",
+                "Preprocessed and augmented a dataset of 63 MRI scans using OpenCV to improve generalization, which enhanced model robustness for lung cancer detection.",
+                "Iterated on model design and training strategies within a team, which improved outcomes and demonstrated collaborative problem-solving skills for the federal ecosystem."
+            ]
+        },
+        {
+            "messages": [],
+            "error": "",
+            "item_id": 1,
+            "item_type": "project",
+            "item_data": "Project Name: Bored Game Engine\n                Duration: None to None\n                Description: The Bored Game Engine is a modular C++ framework built around an ECS (Entity Component System) architecture. I developed a real-time 3D rendering pipeline using OpenGL with custom GLSL shaders for advanced visual effects. The engine includes a robust UI system using ImGui, and a custom input manager based on the Chain of Responsibility pattern. I also designed a memory-efficient linked list container for dynamic game objects. The engine is built with CMake and structured for unit testing and extension. Currently, I am working on version 2, which refactors the architecture using dependency injection and prepares for multi-threaded game loop execution. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints. A modular game engine using ECS architecture and OpenGL for real-time 3D rendering, featuring a custom input system and UI framework. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.\n                Tech Stack: C++, CMake, OpenGL, GLSL, ImGui, LLVM, Computer Graphics",
+            "ranking_reason": "Strong relevance due to the candidate's proficiency in C++ and experience with game engine development, which demonstrates a strong understanding of software design, algorithms, and optimization. The modular ECS architecture and OpenGL rendering pipeline suggest an ability to tackle complex technical challenges. The project's focus on performance tuning and iterative design aligns with the role's emphasis on optimization and working with diverse groups. While the domain is different, the underlying technical skills and problem-solving approach are highly transferable to the role.",
+            "job_info": {
+                "company_name": "NVIDIA",
+                "job_title": "Developer Technology Engineer, Public Sector - New College Grad 2025",
+                "location": "US, CA, Santa Clara",
+                "job_type": "Full time",
+                "description": "NVIDIA is hiring passionate, world-class computer scientists and engineers to work in its Public Sector Developer Technology (Devtech) team! In this role, you will research and develop techniques to GPU-accelerate leading applications in fields targeting applications in the federal ecosystem. You will be performing in-depth analysis and optimization to ensure the best possible performance on current and next-generation GPU architectures.\n\nWhat you will be doing:\n\n*   Working directly with key application developers to understand the current and future problems they are solving, crafting and optimizing core parallel algorithms and data structures to provide the best solutions using GPUs, through reference code development, direct contribution to the full software stack including libraries, applications, and high productivity software environments (e.g. Python).\n*   Collaborating closely with diverse groups at NVIDIA such as the architecture, research, libraries, tools, and system software teams to influence the design of architectures, software, and programming models, by investigating the impact on application performance and developer productivity.\n*   Occasional travel from time to time for conferences and on-site visits with developers.",
+                "qualifications": [
+                    "Pursuing or recently completed a BS, MS, or PhD degree or equivalent experience in an engineering or computer science related discipline.",
+                    "Programming fluency in C/C++ and/or Fortran with a deep understanding of software design, programming techniques, and algorithms.",
+                    "Strong mathematical fundamentals, including linear algebra and numerical methods.",
+                    "Experience with parallel programming, ideally CUDA C/C++ and OpenACC.",
+                    "Domain expertise in data and graph analytics, signal processing, telecommunications, geographic information systems, machine learning, or deep learning.",
+                    "Experience working within the Federal Government and the ability to hold a US security clearance"
+                ]
+            },
+            "bullet_points": [
+                "Engineered real-time 3D rendering pipeline using OpenGL and GLSL, which improved visual fidelity and demonstrated proficiency in graphics programming.",
+                "Designed modular game engine with ECS architecture in C++, which improved code maintainability and enabled future GPU acceleration."
+            ]
+        },
+        {
+            "messages": [],
+            "error": "",
+            "item_id": 3,
+            "item_type": "project",
+            "item_data": "Project Name: Rick Sanchez Chatbot\n                Duration: None to None\n                Description: Built a Rick Sanchez-themed chatbot using DialoGPT and HuggingFace Transformers. Scraped over 650 dialogue lines using Puppeteer and automated data cleaning. Optimized text generation via hyperparameter tuning, batching, and prompt engineering, improving model perplexity by 12%. Containerized with Docker and deployed on Discord with Redis and Postgres support for state tracking. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints. A Discord chatbot mimicking Rick Sanchez using fine-tuned DialoGPT. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.\n                Tech Stack: Pytorch, Numpy, Docker, Redis, Postgres, HuggingFace, Puppeteer",
+            "ranking_reason": "Good option with a balanced view of technical strengths and applicability. The project showcases the candidate's ability to work with Python and deep learning models, which are relevant to the role. The implementation of a chatbot using DialoGPT and HuggingFace Transformers demonstrates an understanding of NLP and model optimization techniques. The project's focus on hyperparameter tuning and prompt engineering aligns with the role's emphasis on performance optimization. While the domain is less directly relevant than the other projects, the candidate's technical skills and problem-solving approach are still valuable.",
+            "job_info": {
+                "company_name": "NVIDIA",
+                "job_title": "Developer Technology Engineer, Public Sector - New College Grad 2025",
+                "location": "US, CA, Santa Clara",
+                "job_type": "Full time",
+                "description": "NVIDIA is hiring passionate, world-class computer scientists and engineers to work in its Public Sector Developer Technology (Devtech) team! In this role, you will research and develop techniques to GPU-accelerate leading applications in fields targeting applications in the federal ecosystem. You will be performing in-depth analysis and optimization to ensure the best possible performance on current and next-generation GPU architectures.\n\nWhat you will be doing:\n\n*   Working directly with key application developers to understand the current and future problems they are solving, crafting and optimizing core parallel algorithms and data structures to provide the best solutions using GPUs, through reference code development, direct contribution to the full software stack including libraries, applications, and high productivity software environments (e.g. Python).\n*   Collaborating closely with diverse groups at NVIDIA such as the architecture, research, libraries, tools, and system software teams to influence the design of architectures, software, and programming models, by investigating the impact on application performance and developer productivity.\n*   Occasional travel from time to time for conferences and on-site visits with developers.",
+                "qualifications": [
+                    "Pursuing or recently completed a BS, MS, or PhD degree or equivalent experience in an engineering or computer science related discipline.",
+                    "Programming fluency in C/C++ and/or Fortran with a deep understanding of software design, programming techniques, and algorithms.",
+                    "Strong mathematical fundamentals, including linear algebra and numerical methods.",
+                    "Experience with parallel programming, ideally CUDA C/C++ and OpenACC.",
+                    "Domain expertise in data and graph analytics, signal processing, telecommunications, geographic information systems, machine learning, or deep learning.",
+                    "Experience working within the Federal Government and the ability to hold a US security clearance"
+                ]
+            },
+            "bullet_points": [
+                "Fine-tuned DialoGPT for conversational AI by implementing HuggingFace Transformers, which improved model perplexity by 12%, demonstrating NLP expertise.",
+                "Deployed a Discord chatbot with Docker, Redis, and Postgres, by containerizing and integrating the model, supporting state tracking and showcasing full-stack capabilities."
+            ]
+        }
+    ]
+}

@@ -1,0 +1,190 @@
+%-------------------------
+% Resume in Latex
+% Author : Jake Gutierrez
+% Based off of: https://github.com/sb2nov/resume
+% License : MIT
+%------------------------
+
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\input{glyphtounicode}
+
+
+%----------FONT OPTIONS----------
+% sans-serif
+% \usepackage[sfdefault]{FiraSans}
+% \usepackage[sfdefault]{roboto}
+% \usepackage[sfdefault]{noto-sans}
+% \usepackage[default]{sourcesanspro}
+
+% serif
+% \usepackage{CormorantGaramond}
+% \usepackage{charter}
+
+
+\pagestyle{fancy}
+\fancyhf{} % clear all header and footer fields
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Adjust margins
+\addtolength{\oddsidemargin}{-0.6in}
+\addtolength{\evensidemargin}{-0.6in}
+\addtolength{\textwidth}{1.2in}
+\addtolength{\topmargin}{-.5in}
+\addtolength{\textheight}{1.0in}
+
+\urlstyle{same}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+% Ensure that generate pdf is machine readable/ATS parsable
+\pdfgentounicode=1
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-6pt}
+}
+
+\newcommand{\resumeSubSubheading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \textit{\small#1} & \textit{\small #2} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & #2 \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
+
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.1in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+\begin{document}
+	\begin{center}
+		\textbf{\Huge \scshape Hoang Nguyen} \\ \vspace{1pt} 
+		\small 425-361-3396 $|$ \href{mailto:hoangng@uw.edu}{\underline{hoangng@uw.edu}} $|$ \href{https://github.com/kipiiler}{\underline{github.com/kipiiler}} $|$ \href{https://www.linkedin.com/in/kipiiler/}{\underline{linkedin.com/in/kipiiler}} $|$ \href{https://kipiiler.me}{\underline{kipiiler.me}}
+	\end{center}
+
+
+\section{Education}
+	\resumeSubHeadingListStart
+		\resumeSubheading
+			{University of Washington}{Expected Dec 2025}
+			{Bachelor's in Computer Science}{}	\resumeSubHeadingListEnd
+
+
+\vspace{-13pt}\section{Skills}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \footnotesize{\item{
+     \textbf{Languages}{: Python, C++, C, Golang, SQL, Java, TypeScript} \\
+     \textbf{Frameworks and Libraries}{: PyTorch, Numpy, Matplotlib, Sklearn, FastAPI, Flask, Django, CMake, vcpkg, CUDA, OpenGL, GLSL, POSIX, Gin, Postgres, Redis, MySQL, Docker, Nextjs, React, Node.js, Express.js, GraphQL, AWS, Google Cloud Platform, Spark, gRPC} \\
+     
+    }}
+ \end{itemize}
+
+
+\section{Experience}
+	\resumeSubHeadingListStart
+
+	\resumeSubheading
+		{Software Engineer Intern}{Jun 2024 -- Sep 2024}
+		{Visual Concepts}{Seattle, WA}
+		\resumeItemListStart
+			\resumeItem{Developed CUDA kernels for BVH construction by employing warp-level parallelization, which boosted build times.}
+			\resumeItem{Engineered a mesh compression system by implementing custom vector quantization, which decreased 3D model memory usage by 50\%.}
+			\resumeItem{Built an OpenGL + CUDA profiling tool for character rendering pipelines, which improved rendering performance analysis in NBA2K.}
+		\resumeItemListEnd
+
+
+	\resumeSubheading
+		{Research Assistant}{Dec 2024 -- May 2025}
+		{Efeslab University of Washington}{Seattle, WA}
+		\resumeItemListStart
+			\resumeItem{Developed GPU anomaly detection pipelines using CUDA, optimizing for 9.5\% higher F1 scores, showcasing parallel processing proficiency.}
+			\resumeItem{Implemented custom DAG schedulers for efficient workload execution on consumer GPUs, enhancing resource utilization and performance.}
+			\resumeItem{Utilized Python and vLLM to process 1M+ logs for cloud reliability, demonstrating AI and LLM expertise in a research context.}
+		\resumeItemListEnd
+
+
+	\resumeSubheading
+		{Software Engineer Intern}{Oct 2023 -- Dec 2023}
+		{Yoomi Health}{Remote, WA}
+		\resumeItemListStart
+			\resumeItem{Engineered a real-time body-pose tracking pipeline using TensorFlow.js and YOLOv5, which boosted client-side render FPS from 20 to 60, demonstrating performance optimization skills.}
+			\resumeItem{Developed a custom TypeScript visualization library with 20+ charts, coupled with 95\% unit test coverage using Jest, showing proficiency in front-end development and testing methodologies.}
+			\resumeItem{Built a coordinate transformation service using a custom tree structure to preprocess pose data, which reduced load time by 50\%, showcasing expertise in data processing and algorithm design.}
+		\resumeItemListEnd
+
+	\resumeSubHeadingListEnd
+
+
+\section{Projects}
+	\resumeSubHeadingListStart
+
+	\resumeProjectHeading
+	{\textbf{Lung Cancer Detection} $|$ \emph{Pytorch, Python, OpenCV}}{  }
+	\resumeItemListStart
+			\resumeItem{Developed four U-Net CNN architectures for 3D MRI image segmentation using PyTorch, which achieved 78\% accuracy on validation.}
+			\resumeItem{Preprocessed and augmented a dataset of 63 MRI scans using OpenCV to improve generalization, which enhanced model robustness for lung cancer detection.}
+			\resumeItem{Iterated on model design and training strategies within a team, which improved outcomes and demonstrated collaborative problem-solving skills for the federal ecosystem.}
+		\resumeItemListEnd
+
+
+	\resumeProjectHeading
+	{\textbf{Bored Game Engine} $|$ \emph{C++, CMake, OpenGL, GLSL, ImGui, LLVM, Computer Graphics}}{  }
+	\resumeItemListStart
+			\resumeItem{Engineered real-time 3D rendering pipeline using OpenGL and GLSL, which improved visual fidelity and demonstrated proficiency in graphics programming.}
+			\resumeItem{Designed modular game engine with ECS architecture in C++, which improved code maintainability and enabled future GPU acceleration.}
+		\resumeItemListEnd
+
+
+	\resumeProjectHeading
+	{\textbf{Rick Sanchez Chatbot} $|$ \emph{Pytorch, Numpy, Docker, Redis, Postgres, HuggingFace, Puppeteer}}{  }
+	\resumeItemListStart
+			\resumeItem{Fine-tuned DialoGPT for conversational AI by implementing HuggingFace Transformers, which improved model perplexity by 12\%, demonstrating NLP expertise.}
+			\resumeItem{Deployed a Discord chatbot with Docker, Redis, and Postgres, by containerizing and integrating the model, supporting state tracking and showcasing full-stack capabilities.}
+		\resumeItemListEnd
+
+	\resumeSubHeadingListEnd
+
+
+\end{document}

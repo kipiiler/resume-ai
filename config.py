@@ -6,6 +6,7 @@ PORTFOLIO_URL = "https://kipiiler.me"
 
 GITHUB_SHORT_HANDLE = "kipiiler"
 LINKEDIN_SHORT_HANDLE = "kipiiler"
+PORTFOLIO_SHORT_HANDLE = "kipiiler.me"
 
 LANGUAGE_LIST = ["Python", "C++", "C", "Golang", "SQL", "Java", "TypeScript"]
 TECH_STACK_LIST = ["PyTorch", "Numpy", "Matplotlib", "Sklearn", "FastAPI", "Flask", "Django", 
