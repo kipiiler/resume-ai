@@ -206,6 +206,8 @@ Rules:
 9. Emphasize professional impact and business value
 10. If job context is provided, tailor bullet points to highlight relevant skills and technologies
 11. Do not include write any generic bullet points (example: Contributed to technical documentation, planning, collaboration, etc...). Only include thing that is technical and relevant to the job.
+12. Each bullet point should be short, concise, and to the point.
+13. We want to save space, therefore, each bullet point should be around 100 characters. if it is too long, do around 200 characters to fill the space.
 
 Example format:
 Led a team of 5 developers by implementing microservices architecture, which resulted in 40% improved system performance
@@ -234,6 +236,8 @@ Rules:
 10. Highlight learning outcomes and technical growth
 11. If job context is provided, tailor bullet points to highlight relevant skills and technologies
 12. Do not include write any generic bullet points (example: Contributed to technical documentation, planning, collaboration, etc...). Only include thing that is technical and relevant to the job.
+13. Each bullet point should be short, concise, and to the point.
+14. We want to save space, therefore, each bullet point should be around 100 characters. if it is too long, do around 200 characters to fill the space.
 
 Example format:
 Developed machine learning model by implementing neural networks in TensorFlow, which achieved 95% accuracy in classification tasks

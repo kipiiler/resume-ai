@@ -1,31 +1,30 @@
 [
     {
-      "messages": [],
-      "error": "",
-      "item_id": 4,
-      "item_type": "project",
-      "item_data": "Project Name: Lung Cancer Detection\\nDuration: null to null\\nDescription: Created four U-Net CNN architectures for 3D MRI image segmentation to detect lung cancer. Preprocessed and augmented a dataset of 63 MRI scans to improve generalization. Achieved 78% accuracy on validation using a tailored training loop and spatial data augmentations. Worked as a team of two to iterate on model design and training strategies. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints. Used custom U-Nets to detect lung cancer from 3D MRI images with high accuracy.\\nTech Stack: Pytorch, Python, OpenCV",
-      "ranking_reason": "Best fit because the project demonstrates strong problem-solving skills in a domain (medical imaging) that could potentially align with applications in the federal ecosystem. The implementation of U-Net CNN architectures for 3D MRI image segmentation showcases technical complexity and the use of deep learning, which is highly relevant to NVIDIA's focus. The project's focus on accuracy and iterative model design, along with the use of Python and PyTorch, aligns well with the role's requirements. The candidate's ability to work in a team and achieve a concrete result (78% accuracy) further strengthens its appeal.",
-      "job_info": {
-        "company_name": "NVIDIA",
-        "job_title": "Developer Technology Engineer, Public Sector - New College Grad 2025",
-        "location": "US, CA, Santa Clara",
-        "job_type": "Full time",
-        "description": "NVIDIA is hiring passionate, world-class computer scientists and engineers to work in its Public Sector Developer Technology (Devtech) team! In this role, you will research and develop techniques to GPU-accelerate leading applications in fields targeting applications in the federal ecosystem. You will be performing in-depth analysis and optimization to ensure the best possible performance on current and next-generation GPU architectures.\\n\\nWhat you will be doing:\\n\\n* Working directly with key application developers to understand the current and future problems they are solving, crafting and optimizing core parallel algorithms and data structures to provide the best solutions using GPUs, through reference code development, direct contribution to the full software stack including libraries, applications, and high productivity software environments (e.g. Python).\\n* Collaborating closely with diverse groups at NVIDIA such as the architecture, research, libraries, tools, and system software teams to influence the design of architectures, software, and programming models, by investigating the impact on application performance and developer productivity.\\n* Occasional travel from time to time for conferences and on-site visits with developers.",
-        "qualifications": [
-          "Pursuing or recently completed a BS, MS, or PhD degree or equivalent experience in an engineering or computer science related discipline.",
-          "Programming fluency in C/C++ and/or Fortran with a deep understanding of software design, programming techniques, and algorithms.",
-          "Strong mathematical fundamentals, including linear algebra and numerical methods.",
-          "Experience with parallel programming, ideally CUDA C/C++ and OpenACC.",
-          "Domain expertise in data and graph analytics, signal processing, telecommunications, geographic information systems, machine learning, or deep learning.",
-          "Experience working within the Federal Government and the ability to hold a US security clearance"
+        "messages": [],
+        "error": "",
+        "item_id": 2,
+        "item_type": "experience",
+        "item_data": "Company: Visual Concepts (Seattle, WA)\\nDuration: 2024-06 to 2024-09\\nDescription: At Visual Concepts, I developed a GPU/CPU/memory profiling toolkit for character rendering pipelines in NBA2K using OpenGL, GLSL, CUDA, and PSSL. For my first project, I built a framework to benchmark compression algorithms, successfully reducing NPC 3D model memory usage by 50% using a custom vector quantization scheme that lowered bandwidth usage by 30%. In the second project, I implemented a prototype GPU ray tracer to compare BVH layouts and constructed a mesh clustering algorithm to maximize vertex cache reuse. My CUDA kernels for BVH construction employed warp-level parallelization and shared memory, improving build times.\\nTech Stack: C++, OpenGL, CUDA, GLSL, PSSL, CMake, vcpkg, Python",
+        "ranking_reason": "Best fit because this candidate has demonstrated experience with CUDA and C++ in a performance-critical domain (game development). The candidate's work on GPU profiling and ray tracing, along with their mesh compression project, directly aligns with the requirements of the role. The ability to optimize code for GPU architectures and solve performance bottlenecks is highly valuable.",
+        "job_info": {
+          "company_name": "NVIDIA",
+          "job_title": "Developer Technology Engineer, Public Sector - New College Grad 2025",
+          "location": "US, CA, Santa Clara",
+          "job_type": "Full time",
+          "description": "NVIDIA is hiring passionate, world-class computer scientists and engineers to work in its Public Sector Developer Technology (Devtech) team! In this role, you will research and develop techniques to GPU-accelerate leading applications in fields targeting applications in the federal ecosystem. You will be performing in-depth analysis and optimization to ensure the best possible performance on current and next-generation GPU architectures.\\n\\n* Working directly with key application developers to understand the current and future problems they are solving.\\n* Collaborating closely with diverse groups at NVIDIA.\\n* Occasional travel for conferences and on-site visits.",
+          "qualifications": [
+            "Pursuing or recently completed a BS, MS, or PhD in CS or related discipline.",
+            "Programming fluency in C/C++ and/or Fortran.",
+            "Strong math fundamentals including linear algebra and numerical methods.",
+            "Experience with parallel programming, ideally CUDA C/C++ and OpenACC.",
+            "Domain expertise in data analytics, signal processing, or deep learning.",
+            "Experience working with the Federal Government and ability to hold a US security clearance."
+          ]
+        },
+        "bullet_points": [
+          "Developed a GPU/CPU profiling toolkit for NBA2K character rendering pipelines by implementing CUDA and OpenGL, which enabled detailed performance analysis and optimization.",
+          "Engineered a mesh compression system using custom vector quantization, resulting in a 50% reduction in 3D model memory usage and a 30% decrease in bandwidth usage.",
+          "Implemented a prototype GPU ray tracer using CUDA, constructing a mesh clustering algorithm that maximized vertex cache reuse, improving rendering efficiency."
         ]
-      },
-      "bullet_points": [
-        "Developed four custom U-Net CNN architectures for 3D MRI image segmentation in PyTorch, which enabled lung cancer detection with 78% accuracy, demonstrating proficiency in deep learning and medical imaging.",
-        "Implemented data preprocessing and augmentation techniques using OpenCV on a dataset of 63 MRI scans, which enhanced model generalization and improved performance, aligning with the need for robust solutions in the federal ecosystem.",
-        "Collaborated within a team of two to iteratively refine model design and training strategies, which cultivated strong communication and problem-solving skills essential for adapting to emerging challenges in a collaborative environment."
-      ]
-    }
-  ]
-  
+      }      
+]

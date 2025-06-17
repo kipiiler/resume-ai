@@ -167,7 +167,7 @@ def display_user_experiences(user_id: int, show_ids: bool = False):
         table.add_row("Company", exp.company_name)
         table.add_row("Role/Position", exp.role_title)
         table.add_row("Location", exp.company_location)
-        table.add_row("Position", exp.short_description)
+        table.add_row("Short Description", exp.short_description)
         table.add_row("Duration", f"{exp.start_date} to {exp.end_date}")
         table.add_row("Description", exp.long_description)
         table.add_row("Technologies", ", ".join(exp.tech_stack) if exp.tech_stack else "N/A")
@@ -194,7 +194,7 @@ def display_user_projects(user_id: int, show_ids: bool = False):
         table.add_column("Value", style="green")
         
         table.add_row("Name", proj.project_name)
-        table.add_row("Role", proj.short_description)
+        table.add_row("Short Description", proj.short_description)
         table.add_row("Duration", f"{proj.start_date or 'N/A'} to {proj.end_date or 'N/A'}")
         table.add_row("Description", proj.long_description)
         table.add_row("Technologies", ", ".join(proj.tech_stack) if proj.tech_stack else "N/A")
