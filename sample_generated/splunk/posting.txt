@@ -1,0 +1,47 @@
+Software Engineer Intern - Backend/Full-stack (US Remote - Fall 2025)
+Early TalentRemote, Colorado  North Carolina
+
+Apply
+Description
+
+Splunk is here to build a safer and more resilient digital world. The world's leading enterprises use our unified security and observability platform to keep their digital systems secure and reliable. While customers love our technology, it's our people that make Splunk stand out as an amazing career destination and why we've won so many awards as a best place to work. If you become a Splunker, we want your whole, authentic self, what we call your "million data points". So bring your work experience, problem-solving skills and talent, of course, but also bring your joy, your passion and all the things that make you, you.
+Role Summary
+You will experience Splunking and what defines our culture while honing the skills which separate our development teams from others. You will get to work with smart and hardworking individuals who are doing state of the art development work in areas of machine learning, artificial intelligence, data analytics, infrastructure and event correlations across silos to build best-in-class business analytics software.
+What you'll get to do
+Design, develop, code and test software systems, or applications within the scope of a contained, end-to-end project.
+Contribute through participation in agile development of project timelines, implementation design specifications, system flow diagrams, documentation, testing, and ongoing support of systems.
+Work under the close supervision of a mentor with weekly check-ins.
+Must-have Qualifications
+Actively pursuing a Bachelors, Master's, or PhD in Computer Science, Software Engineering, Computer Engineering, Electrical Engineering, Mathematics or a related technical field, and a strong record of academic achievement
+At least one semester/quarter remaining to complete after the internship
+Available to work 40 hours a week for 15 weeks
+Nice-to-have Qualifications
+We’ve taken special care to separate the must-have qualifications from the nice-to-haves. “Nice-to-have” means just that: Nice. To. Have. So, don’t worry if you can’t check off every box. We’re not hiring a list of bullet points–we’re interested in the whole you.
+Familiarity with one mainstream programming language, such as Go, Java, or Python
+Exposure to docker, Kubernetes, or public cloud platforms (e.g. AWS, GCP, Azure)
+Exposure to working with REST APIs
+Familiarity with test-driven development, writing various levels of automated tests, such as unit test, functional test, integration test, system test, or performance / load test
+Able to learn new technologies quickly
+Experience collaborating with others in a fast-paced environment
+Strong communication skills, verbal and written
+Our Splunktern Program is currently anticipated to be:
+ 
+ Monday, September 2, 2025 - Friday, December 12, 2025
+ 
+Candidates should consider their availability to start on the above start date prior to submitting an application. Please note: the dates above are subject to change at Splunk's sole discretion.
+ 
+Splunk is an Equal Opportunity Employer
+At Splunk, we believe creating a culture of belonging isn’t just the right thing to do; it’s also the smart thing. We prioritize diversity, equity, inclusion, and belonging to ensure our employees are supported to bring their best, most authentic selves to work where they can thrive. Qualified applicants receive consideration for employment without regard to race, religion, color, national origin, ancestry, sex, gender, gender identity, gender expression, sexual orientation, marital status, age, physical or mental disability or medical condition, genetic information, veteran status, or any other consideration made unlawful by federal, state, or local laws. We consider qualified applicants with criminal histories, consistent with legal requirements.
+Note:
+Base Pay is based on a candidate completing 3 years of university or the academic equivalent
+Base Pay
+SF Bay Area, Seattle Metro and New York City Metro Area
+Base Pay: $50 per hour
+California (excludes SF Bay Area), Washington (excludes Seattle Metro), Washington DC Metro, and Massachusetts
+Base Pay: $45 per hour
+All other cities and states excluding California, Washington, Massachusetts, New York City Metro Area and Washington DC Metro Area.
+Base Pay: $42 per hour
+Splunk provides flexibility and choice in the working arrangement for most roles, including remote and/or in-office roles. We have a market-based pay structure which varies by location. Please note that the base pay is a guideline and for candidates who receive an offer, the base pay will vary based on factors such as work location as set out above, as well as the knowledge, skills, year in school and experience of the candidate. In addition to base pay, this role may be eligible for benefits.
+ 
+
+Thank you for your interest in Splunk!

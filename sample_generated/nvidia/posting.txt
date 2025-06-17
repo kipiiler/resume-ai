@@ -1,0 +1,36 @@
+NVIDIA is searching for a world-class Research Scientist to join our growing Spatial Intelligence research team. The ideal candidate will be conducting cutting-edge research at the intersection of Machine Learning, Computer Vision and Computer Graphics, and working alongside top experts in these fields. With incredible resources in AI, graphics and robotics, you will be able to impact, contribute and advance these exciting domains. Topics include but are not limited to AI for simulation, 3D Deep Learning, DL for animation, content generation, transfer learning, domain adaptation, computer vision, and medical imaging. With its unique open culture, NVIDIA is one of the best industry labs to do AI research.
+
+What you will be doing:
+
+Apply deep learning techniques to the simulation of complex physical phenomena such as fluid dynamics, fracture of materials, combustion, audio synthesis and propagation, and more.
+
+Work on improving realism and immersive qualities of VR environments and interactions, including intelligent characters, behavior of crowds and traffic, and human-machine interface problems.
+
+Participate in numerous projects to conduct Deep Learning research and publish papers to well known conferences (ex. ICCV)
+
+Product development for technology in Games, Virtual Reality, Education and other applications.
+
+What we need to see:
+
+PhD or equivalent experience in Computer Science or a related field.
+
+Expertise in computer graphics, simulation or game development.
+
+In depth experience with C++/C, CUDA, DX, or OpenGL.
+
+Dedication to producing high quality and creative results in a collaborative environment.
+
+Ways to stand out from the crowd:
+
+Skills in efficient model architectures and efficient implementations.
+
+Sharp mathematics skills.
+
+Image recognition and speech recognition — GPU deep learning has provided the foundation for machines to learn, perceive, reason and solve problems. The GPU started out as the engine for simulating human imagination, conjuring up the amazing virtual worlds of video games and Hollywood films. Now, NVIDIA’s GPU runs deep learning algorithms, simulating human intelligence, and acts as the brain of computers, robots and self-driving cars that can perceive and understand the world. Just as human imagination and intelligence are linked, computer graphics and artificial intelligence come together in our architecture. Two modes of the human brain, two modes of the GPU. This may explain why NVIDIA GPUs are used broadly for deep learning, and NVIDIA is increasingly known as “the AI computing company.”
+
+NVIDIA is widely considered to be one of the technology world’s most desirable employers. We have some of the most forward-thinking and hardworking people in the world working for us. Are you creative, autonomous and have a passion to impact the world? If so, apply today!
+
+The base salary range is 160,000 USD - 258,750 USD. Your base salary will be determined based on your location, experience, and the pay of employees in similar positions.
+You will also be eligible for equity and benefits. NVIDIA accepts applications on an ongoing basis. 
+
+NVIDIA is committed to fostering a diverse work environment and proud to be an equal opportunity employer. As we highly value diversity in our current and future employees, we do not discriminate (including in our hiring and promotion practices) on the basis of race, religion, color, national origin, gender, gender expression, sexual orientation, age, marital status, veteran status, disability status or any other characteristic protected by law.
