@@ -11,6 +11,8 @@ from rich.table import Table
 from services.user import UserService
 from services.experience import ExperienceService
 from services.project import ProjectService
+from agents import AgentFactory
+from services.resume_writer import ResumeWriter
 from model.schema import User, Experience, Project
 
 console = Console()
@@ -19,6 +21,14 @@ console = Console()
 user_service = UserService()
 experience_service = ExperienceService()
 project_service = ProjectService()
+
+def ensure_data_directory():
+    """Ensure the data directory exists."""
+    data_dir = "data"
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)
+        console.print(f"[dim]Created data directory: {data_dir}[/dim]")
+    return data_dir
 
 def get_or_create_user() -> int:
     """Get existing user or create a new one."""
@@ -480,7 +490,9 @@ def export_data_to_json(user_id: int):
     
     # Get file path
     default_filename = f"resume_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-    file_path = Prompt.ask("Enter the output file path", default=default_filename)
+    data_dir = ensure_data_directory()
+    default_path = os.path.join(data_dir, default_filename)
+    file_path = Prompt.ask("Enter the output file path", default=default_path)
     
     try:
         with open(file_path, 'w', encoding='utf-8') as file:
@@ -534,6 +546,285 @@ def delete_all_user_data(user_id: int):
     except Exception as e:
         console.print(f"[red]Error deleting data: {str(e)}[/red]")
 
+def generate_resume_from_job_url(user_id: int):
+    """Generate resume content from a job URL using the complete workflow."""
+    console.print("\n[bold blue]Generate Resume from Job URL[/bold blue]")
+    
+    # Get job URL from user
+    job_url = Prompt.ask("Enter the job posting URL")
+    
+    # Configuration
+    num_experiences = int(Prompt.ask("Number of top experiences to include", default="3"))
+    num_projects = int(Prompt.ask("Number of top projects to include", default="3"))
+    
+    try:
+        console.print("\n[yellow]Step 1: Analyzing job posting...[/yellow]")
+        
+        # Job analysis
+        job_analysis_agent = AgentFactory.create_agent("job_analysis", temperature=0.7)
+        analysis_result = job_analysis_agent.analyze_job(job_url)
+        
+        if analysis_result.get("error"):
+            console.print(f"[red]Error analyzing job: {analysis_result['error']}[/red]")
+            return
+        
+        job_info = analysis_result.get("job_info")
+        if not job_info:
+            console.print("[red]Failed to extract job information[/red]")
+            return
+        
+        console.print(f"[green]✓ Job analyzed: {job_info.job_title} at {job_info.company_name}[/green]")
+        
+        console.print("\n[yellow]Step 2: Ranking experiences and projects...[/yellow]")
+        
+        # Ranking
+        ranking_agent = AgentFactory.create_agent("ranking", temperature=0.4)
+        ranking_result = ranking_agent.rank_both(job_info, user_id)
+        
+        if ranking_result.get("error"):
+            console.print(f"[red]Error ranking: {ranking_result['error']}[/red]")
+            return
+        
+        ranked_experiences = ranking_result.get("ranked_experiences", [])
+        ranked_projects = ranking_result.get("ranked_projects", [])
+        
+        if not ranked_experiences and not ranked_projects:
+            console.print("[red]No experiences or projects found for ranking[/red]")
+            return
+        
+        console.print(f"[green]✓ Ranked {len(ranked_experiences)} experiences and {len(ranked_projects)} projects[/green]")
+        
+        console.print("\n[yellow]Step 3: Generating bullet points...[/yellow]")
+        
+        # Generate bullet points
+        resume_agent = AgentFactory.create_agent("resume", temperature=1.0)
+        
+        experience_results = []
+        for i in range(min(num_experiences, len(ranked_experiences))):
+            experience_id = ranked_experiences[i][0]
+            experience_reason = ranked_experiences[i][1]
+            console.print(f"  • Processing experience {i+1}/{num_experiences}...")
+            
+            result = resume_agent.generate_bullet_points_for_experience(
+                experience_id, 
+                ranking_reason=experience_reason, 
+                job_info=job_info
+            )
+            experience_results.append(result)
+        
+        project_results = []
+        for i in range(min(num_projects, len(ranked_projects))):
+            project_id = ranked_projects[i][0]
+            project_reason = ranked_projects[i][1]
+            console.print(f"  • Processing project {i+1}/{num_projects}...")
+            
+            result = resume_agent.generate_bullet_points_for_project(
+                project_id, 
+                ranking_reason=project_reason, 
+                job_info=job_info
+            )
+            project_results.append(result)
+        
+        console.print("[green]✓ Bullet points generated successfully![/green]")
+        
+        # Save results
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        data_dir = ensure_data_directory()
+        
+        # Save to log file
+        log_filename = os.path.join(data_dir, f"resume_generation_{timestamp}.log")
+        with open(log_filename, "w") as f:
+            f.write("Resume Generation Results\n")
+            f.write("=" * 50 + "\n\n")
+            f.write(f"Job: {job_info.job_title} at {job_info.company_name}\n")
+            f.write(f"URL: {job_url}\n\n")
+            
+            f.write("Experience Results:\n")
+            f.write("-" * 30 + "\n")
+            for i, result in enumerate(experience_results, 1):
+                f.write(f"\nExperience {i}:\n")
+                f.write(f"ID: {ranked_experiences[i-1][0]}\n")
+                f.write(f"Ranking Reason: {ranked_experiences[i-1][1]}\n")
+                if isinstance(result, dict) and "bullet_points" in result:
+                    f.write("Bullet Points:\n")
+                    for bullet in result["bullet_points"]:
+                        f.write(f"- {bullet}\n")
+                if result.get("error"):
+                    f.write(f"Error: {result['error']}\n")
+                f.write("\n")
+                
+            f.write("\nProject Results:\n")
+            f.write("-" * 30 + "\n")
+            for i, result in enumerate(project_results, 1):
+                f.write(f"\nProject {i}:\n")
+                f.write(f"ID: {ranked_projects[i-1][0]}\n")
+                f.write(f"Ranking Reason: {ranked_projects[i-1][1]}\n")
+                if isinstance(result, dict) and "bullet_points" in result:
+                    f.write("Bullet Points:\n")
+                    for bullet in result["bullet_points"]:
+                        f.write(f"- {bullet}\n")
+                if result.get("error"):
+                    f.write(f"Error: {result['error']}\n")
+                f.write("\n")
+        
+        # Convert results to JSON-serializable format
+        experience_results_json = []
+        for result in experience_results:
+            if isinstance(result, dict):
+                result_copy = result.copy()
+                if 'job_info' in result_copy and hasattr(result_copy['job_info'], '__dict__'):
+                    result_copy['job_info'] = result_copy['job_info'].__dict__
+                experience_results_json.append(result_copy)
+            else:
+                experience_results_json.append(result.__dict__ if hasattr(result, '__dict__') else result)
+                
+        project_results_json = []
+        for result in project_results:
+            if isinstance(result, dict):
+                result_copy = result.copy()
+                if 'job_info' in result_copy and hasattr(result_copy['job_info'], '__dict__'):
+                    result_copy['job_info'] = result_copy['job_info'].__dict__
+                project_results_json.append(result_copy)
+            else:
+                project_results_json.append(result.__dict__ if hasattr(result, '__dict__') else result)
+        
+        # Save to JSON file
+        json_filename = os.path.join(data_dir, f"resume_generation_results_{timestamp}.json")
+        with open(json_filename, "w") as f:
+            json.dump({
+                "job_info": {
+                    "company_name": job_info.company_name,
+                    "job_title": job_info.job_title,
+                    "location": job_info.location,
+                    "job_type": job_info.job_type,
+                    "url": job_url
+                },
+                "experience_results": experience_results_json,
+                "project_results": project_results_json,
+                "generation_info": {
+                    "timestamp": timestamp,
+                    "num_experiences": len(experience_results),
+                    "num_projects": len(project_results)
+                }
+            }, f, indent=4)
+        
+        console.print(f"\n[green]Resume generation complete![/green]")
+        console.print(f"[dim]Log saved to: {log_filename}[/dim]")
+        console.print(f"[dim]JSON saved to: {json_filename}[/dim]")
+        
+        # Ask if user wants to generate LaTeX resume
+        if Confirm.ask("\nWould you like to generate a LaTeX resume file now?"):
+            write_resume_from_results(user_id, json_filename)
+        
+    except Exception as e:
+        console.print(f"[red]Error during resume generation: {str(e)}[/red]")
+
+def write_resume_from_results(user_id: int, results_file: Optional[str] = None):
+    """Write LaTeX resume from generated results JSON file."""
+    console.print("\n[bold blue]Generate LaTeX Resume[/bold blue]")
+    
+    if not results_file:
+        # Get JSON file path from user
+        results_file = Prompt.ask("Enter path to resume generation results JSON file")
+    
+    try:
+        # Load results
+        with open(results_file, 'r') as f:
+            data = json.load(f)
+        
+        exp_results = data.get("experience_results", [])
+        proj_results = data.get("project_results", [])
+        
+        if not exp_results and not proj_results:
+            console.print("[red]No experience or project results found in file[/red]")
+            return
+        
+        # Convert to format expected by ResumeWriter
+        exp_list = []
+        for exp_result in exp_results:
+            if isinstance(exp_result, dict) and "item_id" in exp_result and "bullet_points" in exp_result:
+                exp_list.append((exp_result["item_id"], exp_result["bullet_points"]))
+        
+        proj_list = []
+        for proj_result in proj_results:
+            if isinstance(proj_result, dict) and "item_id" in proj_result and "bullet_points" in proj_result:
+                proj_list.append((proj_result["item_id"], proj_result["bullet_points"]))
+        
+        # Get output file path
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        data_dir = ensure_data_directory()
+        default_output = os.path.join(data_dir, f"resume_{timestamp}.tex")
+        output_file = Prompt.ask("Enter output LaTeX file path", default=default_output)
+        
+        # Get template path
+        template_path = Prompt.ask("Enter template path", default="template/jake_resume.tex")
+        
+        # Generate resume
+        console.print("\n[yellow]Generating LaTeX resume...[/yellow]")
+        
+        resume_writer = ResumeWriter(template_path=template_path)
+        resume_writer.write_resume(user_id, output_file, exp_list, proj_list)
+        
+        console.print(f"[green]✓ LaTeX resume generated: {output_file}[/green]")
+        console.print(f"[dim]Used {len(exp_list)} experiences and {len(proj_list)} projects[/dim]")
+        
+        if data.get("job_info"):
+            job_info = data["job_info"]
+            console.print(f"[dim]Targeted for: {job_info.get('job_title', 'Unknown')} at {job_info.get('company_name', 'Unknown')}[/dim]")
+        
+    except FileNotFoundError:
+        console.print(f"[red]File not found: {results_file}[/red]")
+    except json.JSONDecodeError:
+        console.print(f"[red]Invalid JSON file: {results_file}[/red]")
+    except Exception as e:
+        console.print(f"[red]Error generating resume: {str(e)}[/red]")
+
+def list_generated_results():
+    """List available resume generation result files."""
+    console.print("\n[bold blue]Available Resume Generation Results[/bold blue]")
+    
+    data_dir = ensure_data_directory()
+    
+    # Look for JSON files with resume generation pattern
+    import glob
+    search_pattern = os.path.join(data_dir, "resume_generation_results_*.json")
+    result_files = glob.glob(search_pattern)
+    
+    if not result_files:
+        console.print(f"[yellow]No resume generation result files found in {data_dir}/[/yellow]")
+        return
+    
+    table = Table(title="Resume Generation Files")
+    table.add_column("File", style="cyan")
+    table.add_column("Date", style="green")
+    table.add_column("Job Info", style="yellow")
+    
+    for file in sorted(result_files, reverse=True):
+        try:
+            with open(file, 'r') as f:
+                data = json.load(f)
+            
+            # Extract timestamp from filename
+            filename = os.path.basename(file)
+            timestamp_str = filename.replace("resume_generation_results_", "").replace(".json", "")
+            try:
+                timestamp = datetime.strptime(timestamp_str, "%Y%m%d_%H%M%S")
+                date_str = timestamp.strftime("%Y-%m-%d %H:%M")
+            except:
+                date_str = "Unknown"
+            
+            # Extract job info
+            job_info = data.get("job_info", {})
+            job_str = f"{job_info.get('job_title', 'Unknown')} at {job_info.get('company_name', 'Unknown')}"
+            
+            table.add_row(filename, date_str, job_str)
+            
+        except Exception as e:
+            filename = os.path.basename(file)
+            table.add_row(filename, "Error", f"Failed to read: {str(e)}")
+    
+    console.print(table)
+
 @click.command()
 def main():
     """Interactive CLI to collect user experience and project details and store them in the database."""
@@ -558,9 +849,11 @@ def main():
         console.print("8. Load Data from JSON File")
         console.print("9. Export Data to JSON File")
         console.print("10. Delete All My Data")
-        console.print("11. Exit")
+        console.print("11. Generate Resume from Job URL")
+        console.print("12. List Generated Results")
+        console.print("13. Exit")
         
-        choice = Prompt.ask("Enter your choice", choices=["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"])
+        choice = Prompt.ask("Enter your choice", choices=["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"])
         
         try:
             if choice == "1":
@@ -602,6 +895,28 @@ def main():
                 delete_all_user_data(user_id)
                 
             elif choice == "11":
+                generate_resume_from_job_url(user_id)
+                
+            elif choice == "12":
+                list_generated_results()
+                # Ask if user wants to generate resume from existing results
+                import glob
+                data_dir = ensure_data_directory()
+                search_pattern = os.path.join(data_dir, "resume_generation_results_*.json")
+                result_files = glob.glob(search_pattern)
+                if result_files and Confirm.ask("\nWould you like to generate a LaTeX resume from one of these files?"):
+                    file_choices = [f"{i+1}" for i in range(len(result_files))]
+                    
+                    console.print("\nSelect a file:")
+                    for i, file in enumerate(sorted(result_files, reverse=True), 1):
+                        filename = os.path.basename(file)
+                        console.print(f"{i}. {filename}")
+                    
+                    file_choice = Prompt.ask("Enter file number", choices=file_choices)
+                    selected_file = sorted(result_files, reverse=True)[int(file_choice) - 1]
+                    write_resume_from_results(user_id, selected_file)
+                
+            elif choice == "13":
                 if Confirm.ask("Are you sure you want to exit?"):
                     console.print("[green]Thank you for using Resume Builder CLI![/green]")
                     break

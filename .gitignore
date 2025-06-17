@@ -58,3 +58,5 @@ resume_data.json
 
 # template
 template/my_resume.tex
+
+data/*
