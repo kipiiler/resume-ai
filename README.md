@@ -61,4 +61,4 @@ We welcome contributions! Check out our [Contributing Guide](docs/contributing.m
 
 ---
 
-⭐ **Star this repo** if Resume AI helped you land interviews!  
+⭐ **Star this repo** if this project helped you land interviews!  
