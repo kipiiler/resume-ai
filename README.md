@@ -1,7 +1,7 @@
 > 👍 **Note**  
 > This system is experimental. Use responsibly and always review generated content.
 
-# 🚀 Resume AI
+# 🚀 Resume tailoring AI
 
 A automatic resume customized system that analyzes job postings, ranks your experiences and projects, and generates tailored bullet points using LLMs.
 
