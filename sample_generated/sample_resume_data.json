@@ -3,10 +3,11 @@
     {
       "company_name": "Yoomi Health",
       "company_location": "Remote, WA",
+      "role_title": "Software Engineer Intern",
       "start_date": "2023-10",
       "end_date": "2023-12",
       "short_description": "Developed a TypeScript visualization library with 20+ charts and 95% unit test coverage. Built a real-time body-pose tracking pipeline (YOLOv5/RTMPose) with TensorFlow.js, reducing load time by 50% and tripling FPS. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
-      "long_description": "Created a TypeScript visualization library with Nivo.js and DOM/CSS interactivity. Built a coordinate transform pipeline and integrated body-pose models with TensorFlow.js. Improved client-side performance by tripling FPS and halving load time. Added test infrastructure with a custom abstraction on React Testing Library, and supported backend integration using AWS Lambda and Cognito. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
+      "long_description": "As a Software Engineer Intern, I created a custom TypeScript visualization library for internal analytics tools, featuring 20+ charts (bar, scatter, heatmap) with strong unit test coverage using Jest. I engineered a real-time body-pose tracking pipeline integrated into React clients, using TensorFlow.js, YOLOv5, and RTMPose. To ensure performance across devices, I implemented quantization-aware optimizations and dynamic model selection, raising client-side render FPS from 20 to 60. I also built a coordinate transformation service using a custom tree structure to preprocess pose data, halving load time. Additionally, I contributed to AWS Lambda + Cognito-based authentication workflows and extended our testing infrastructure with abstraction layers on top of React Testing Library to simulate interactivity. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
       "tech_stack": [
         "TypeScript",
         "React",
@@ -24,10 +25,11 @@
     {
       "company_name": "Visual Concepts",
       "company_location": "Seattle, WA",
+      "role_title": "Software Engineer Intern",
       "start_date": "2024-06",
       "end_date": "2024-09",
       "short_description": "Built an OpenGL + CUDA profiling tool for NBA2K character rendering. Shipped a mesh compression system that halved 3D model memory usage, and implemented fast GPU ray-tracing algorithms. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
-      "long_description": "Built a rendering profiler with OpenGL/CUDA for character rendering. Compressed 3D models using a custom quantization scheme, reducing memory usage by 50%. Designed warp-parallel CUDA BVH builders and clustering strategies for cache reuse. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
+      "long_description": "At Visual Concepts, I developed a GPU/CPU/memory profiling toolkit for character rendering pipelines in NBA2K using OpenGL, GLSL, CUDA, and PSSL. For my first project, I built a framework to benchmark compression algorithms, successfully reducing NPC 3D model memory usage by 50% using a custom vector quantization scheme that lowered bandwidth usage by 30%. In the second project, I implemented a prototype GPU ray tracer to compare BVH layouts and constructed a mesh clustering algorithm to maximize vertex cache reuse. My CUDA kernels for BVH construction employed warp-level parallelization and shared memory, improving build times. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
       "tech_stack": [
         "C++",
         "OpenGL",
@@ -42,10 +44,11 @@
     {
       "company_name": "Rocket Mortage",
       "company_location": "Detroit, MI",
+      "role_title": "Software Engineer Intern",
       "start_date": "2023-06",
       "end_date": "2023-08",
       "short_description": "Built a full-stack internal training tool using React and serverless AWS stack, integrated with Microsoft Teams and Graph API for real-time coaching insights. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
-      "long_description": "Developed a full-stack app with React, AWS Lambda, and RDS to collect and analyze coaching session data. Integrated Microsoft Graph API to ingest Teams meeting data. Auth handled with SAML. Built robust API and unit/e2e tests using Jest. Provided key insights to HR and training teams, improving efficiency by replacing Excel-based tracking. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
+      "long_description": "During my internship with the DevCore team, I developed a full-stack application to track and analyze internal coaching sessions. The frontend (React + TypeScript) collected structured input, integrated with Microsoft Teams via Graph API to retrieve meeting data, and authenticated users with SAML-based Microsoft SSO. On the backend, I implemented a serverless API using AWS API Gateway, Lambda, and RDS (PostgreSQL) with Express.js for flexibility. The data pipeline automatically ingested and exported to the company\u2019s data warehouse. To ensure robustness, I wrote extensive unit and e2e tests with Jest. The project enabled training staff to save significant manual effort and generated actionable insights for leadership, transitioning from ad-hoc Excel sheets to a scalable analytics backend. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
       "tech_stack": [
         "React",
         "TypeScript",
@@ -60,39 +63,45 @@
       ]
     },
     {
-      "company_name": "Efeslab \u2013 University of Washington",
+      "company_name": "Efeslab University of Washington",
       "company_location": "Seattle, WA",
+      "role_title": "Research Assistant",
       "start_date": "2024-12",
-      "end_date": "2025-06",
+      "end_date": "2025-05",
       "short_description": "Researching AI and GPU anomaly detection in cloud systems using LLMs and Python DAG schedulers. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
-      "long_description": "Built a benchmark framework for GPU reliability analysis with vLLM, CUDA, and Nsight. Designed DAG schedulers and evolutionary algorithms to detect cloud GPU anomalies. Improved detection accuracy by 9.5% while lowering operational cost. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
+      "long_description": "I developed multi-agent collaboration models to detect cloud reliability issues, processing over 1 million logs using Python and LLMs (vLLM). Created a benchmarking framework for consumer GPUs by implementing custom DAG schedulers and GPU partitioning to enable efficient workload execution. Applied evolutionary algorithms to optimize GPU anomaly detection pipelines, resulting in a 9.5% increase in F1 scores and noticeable cost reduction. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
       "tech_stack": [
         "Python",
         "vLLM",
         "CUDA",
-        "Nsight"
+        "Nsight",
+        "Linux"
       ]
     },
     {
       "company_name": "University of Washington",
       "company_location": "Seattle, WA",
+      "role_title": "Teaching Assistant",
       "start_date": "2024-12",
-      "end_date": "2025-06",
+      "end_date": "2025-05",
       "short_description": "Teaching Assistant for Computer Security, leading weekly sections and designing hands-on challenges. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
-      "long_description": "Led sections and labs on system and web security. Taught SQLi, buffer overflows, race conditions. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
+      "long_description": "Served as a Teaching Assistant for CSE Security course, leading discussion sections of 30+ students. Taught systems and web security concepts including buffer overflows, SQL injection, and race conditions. Designed CTF-style challenges to reinforce practical hacking techniques and countermeasures. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
       "tech_stack": [
         "C",
         "C++",
-        "SQL"
+        "SQL",
+        "Python",
+        "Linux"
       ]
     },
     {
-      "company_name": "Software Engineering Club (SWECC) \u2013 UW",
+      "company_name": "Software Engineering Club (SWECC) UW",
       "company_location": "Seattle, WA",
+      "role_title": "Software Engineering Officer",
       "start_date": "2024-09",
       "end_date": "2025-04",
       "short_description": "Built automation and monitoring systems to improve SWE Club infrastructure. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
-      "long_description": "Created mock interview matching system with Django, EC2, and PostgreSQL. Built Docker monitoring with FastAPI and DynamoDB. Used GitHub Actions and Docker for CI/CD. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
+      "long_description": "As a Software Engineering Officer, I built an automated interview pairing platform using Django, PostgreSQL, and AWS EC2, saving 3 hours/week in officer time. Created a container monitoring service using FastAPI and Docker SDK with DynamoDB, improving system uptime by 30%. Integrated CI/CD with GitHub Actions and Docker for seamless deployment and infrastructure management, reducing manual maintenance by 50%. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
       "tech_stack": [
         "Django",
         "AWS EC2",
@@ -104,14 +113,16 @@
       ]
     },
     {
-      "company_name": "Columbia Basin Research Lab \u2013 University of Washington",
+      "company_name": "Columbia Basin Research Lab University of Washington",
       "company_location": "Seattle, WA",
+      "role_title": "Research Assistant",
       "start_date": "2022-04",
       "end_date": "2024-03",
       "short_description": "Built tools and CNN models to analyze fish health and assist dam managers. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
-      "long_description": "Developed model analysis tool in R + React for dam managers. Created CNN to predict fish survival from scale images. Applied explainable AI techniques like grad-CAM and saliency maps. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
+      "long_description": "Created web-based model querying tools for Sacramento River dam managers, enabling statistical analysis for optimized water release. Trained a custom CNN model to improve fish survival prediction by 14%, and used explainable AI techniques (LRP, grad-CAM, saliency maps) to analyze feature importance. Contributed to ecological impact minimization by enabling informed decisions through React and R tools. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
       "tech_stack": [
         "Python",
+        "PyTorch",
         "R",
         "React",
         "CNN",
@@ -124,8 +135,8 @@
       "project_name": "Bored Game Engine",
       "start_date": null,
       "end_date": null,
-      "short_description": "A modular game engine using ECS architecture and OpenGL for real-time 3D rendering. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
-      "long_description": "Developed modular game engine using C++, ECS architecture, OpenGL, and ImGui. Integrated GLSL shaders, custom input manager, and dependency-injection-based v2 refactor. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
+      "short_description": "A modular game engine using ECS architecture and OpenGL for real-time 3D rendering, featuring a custom input system and UI framework. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
+      "long_description": "The Bored Game Engine is a modular C++ framework built around an ECS (Entity Component System) architecture. I developed a real-time 3D rendering pipeline using OpenGL with custom GLSL shaders for advanced visual effects. The engine includes a robust UI system using ImGui, and a custom input manager based on the Chain of Responsibility pattern. I also designed a memory-efficient linked list container for dynamic game objects. The engine is built with CMake and structured for unit testing and extension. Currently, I am working on version 2, which refactors the architecture using dependency injection and prepares for multi-threaded game loop execution. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
       "tech_stack": [
         "C++",
         "CMake",
@@ -142,7 +153,7 @@
       "start_date": null,
       "end_date": null,
       "short_description": "A poker-bot tournament platform with safe containerized execution and gameplay simulation. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
-      "long_description": "Designed and built a distributed pokerbot platform with Go, Python, and RabbitMQ. Managed secure Docker execution and tournament simulation with Postgres and Redis. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
+      "long_description": "Spearheaded development of a distributed poker-bot tournament platform using Go and Python. Used hexagonal architecture with Gin and Gorilla for scalable API design. Implemented Docker + RabbitMQ-based code execution framework that ran untrusted user code securely. Simulated gameplay using a Python poker engine and integrated Postgres and Redis for match data tracking. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
       "tech_stack": [
         "Go",
         "Python",
@@ -160,7 +171,7 @@
       "start_date": null,
       "end_date": null,
       "short_description": "A Discord chatbot mimicking Rick Sanchez using fine-tuned DialoGPT. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
-      "long_description": "Created a cartoon-accurate chatbot using HuggingFace DialoGPT and web-scraped Rick and Morty dialogues. Containerized deployment with Redis and Postgres. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
+      "long_description": "Built a Rick Sanchez-themed chatbot using DialoGPT and HuggingFace Transformers. Scraped over 650 dialogue lines using Puppeteer and automated data cleaning. Optimized text generation via hyperparameter tuning, batching, and prompt engineering, improving model perplexity by 12%. Containerized with Docker and deployed on Discord with Redis and Postgres support for state tracking. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
       "tech_stack": [
         "Pytorch",
         "Numpy",
@@ -177,9 +188,10 @@
       "start_date": null,
       "end_date": null,
       "short_description": "Used custom U-Nets to detect lung cancer from 3D MRI images with high accuracy. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
-      "long_description": "Created 4 U-Net CNN variants for lung cancer segmentation from MRI scans. Augmented data and tuned training, achieving 78% accuracy. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
+      "long_description": "Created four U-Net CNN architectures for 3D MRI image segmentation to detect lung cancer. Preprocessed and augmented a dataset of 63 MRI scans to improve generalization. Achieved 78% accuracy on validation using a tailored training loop and spatial data augmentations. Worked as a team of two to iterate on model design and training strategies. This experience provided deep exposure to practical problem solving in a collaborative environment, requiring strong communication, technical precision, and iterative design. I contributed to technical discussions, wrote detailed documentation, participated in code reviews, and adapted quickly to emerging challenges. Through hands-on implementation and performance tuning, I was able to improve outcomes that aligned with organizational goals, end-user needs, and system-level constraints.",
       "tech_stack": [
         "Pytorch",
+        "Python",
         "OpenCV"
       ],
       "team_size": 2
@@ -188,6 +200,6 @@
   "export_info": {
     "total_experiences": 8,
     "total_projects": 4,
-    "export_date": "2025-06-15 22:21:41.465111"
+    "export_date": "2025-06-15 07:56:10.442039"
   }
 }
